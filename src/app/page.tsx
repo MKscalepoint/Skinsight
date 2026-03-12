@@ -9,7 +9,6 @@ import {
 import Landing from '@/components/Landing';
 import Onboarding from '@/components/Onboarding';
 import Dashboard from '@/components/Dashboard';
-import RoutineSidebar from '@/components/RoutineSidebar';
 import IngredientDecoder from '@/components/IngredientDecoder';
 import CheckProducts from '@/components/CheckProducts';
 import ScamCheck from '@/components/ScamCheck';
@@ -79,7 +78,6 @@ export default function App() {
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [activeSessionId, setActiveId] = useState<string | null>(null);
   const [routine, setRoutine] = useState<RoutineProduct[]>([]);
-  const [showRoutine, setShowRoutine] = useState(false);
   const [showSessions, setShowSessions] = useState(false);
   const [showStartOverConfirm, setShowStartOverConfirm] = useState(false);
   const [showIngredients, setShowIngredients] = useState(false);
@@ -514,7 +512,7 @@ export default function App() {
             onOpenIngredients={() => setShowIngredients(true)}
             onOpenCheckProducts={() => setShowCheckProducts(true)}
             onOpenScamCheck={() => setShowScamCheck(true)}
-            onOpenRoutine={() => setShowRoutine(true)}
+            onOpenRoutine={() => {}}
             onEditProfile={() => setEditingProfile(true)}
             onRoutineUpdate={handleRoutineUpdate}
           />
