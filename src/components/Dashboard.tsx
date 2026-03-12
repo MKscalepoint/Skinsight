@@ -1,6 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import { UserProfile, RoutineProduct } from '@/types';
+import { generateId } from '@/lib/storage';
 
 const TEAL = '#0d9488';
 const TEAL_LIGHT = '#f0fdfa';
@@ -15,6 +17,7 @@ interface DashboardProps {
   onOpenScamCheck: () => void;
   onOpenRoutine: () => void;
   onEditProfile: () => void;
+  onRoutineUpdate: (r: RoutineProduct[]) => void;
 }
 
 const SUGGESTIONS = [
@@ -24,27 +27,53 @@ const SUGGESTIONS = [
   'Is my routine causing breakouts?',
 ];
 
-const AM_STEPS = ['Cleanser', 'Toner', 'Serum', 'Moisturiser', 'SPF'];
+const PRODUCT_TYPES = ['Cleanser', 'Toner', 'Serum', 'Eye cream', 'Moisturiser', 'SPF', 'Oil', 'Exfoliant', 'Mask', 'Treatment', 'Other'];
 
 export default function Dashboard({
   profile, routine, onOpenChat, onOpenIngredients,
-  onOpenCheckProducts, onOpenScamCheck, onOpenRoutine, onEditProfile,
+  onOpenCheckProducts, onOpenScamCheck, onOpenRoutine, onEditProfile, onRoutineUpdate,
 }: DashboardProps) {
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 
+  // Inline routine state
+  const [addingProduct, setAddingProduct] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [newType, setNewType] = useState('Serum');
+  const [newTime, setNewTime] = useState<'AM' | 'PM' | 'Both'>('AM');
+  const [routineTab, setRoutineTab] = useState<'AM' | 'PM'>('AM');
+
   const amRoutine = routine.filter(p => p.timeOfDay === 'AM' || p.timeOfDay === 'Both');
   const pmRoutine = routine.filter(p => p.timeOfDay === 'PM' || p.timeOfDay === 'Both');
-  const displayRoutine = amRoutine.length > 0 ? amRoutine : pmRoutine;
-  const routineLabel = amRoutine.length > 0 ? '☀ Morning' : '☾ Evening';
+  const displayRoutine = routineTab === 'AM' ? amRoutine : pmRoutine;
+
+  const handleAddProduct = () => {
+    if (!newName.trim()) return;
+    const updated = [...routine, {
+      id: generateId(),
+      name: newName.trim(),
+      type: newType,
+      timeOfDay: newTime,
+      step: routine.length + 1,
+    }];
+    onRoutineUpdate(updated);
+    setNewName('');
+    setNewType('Serum');
+    setNewTime('AM');
+    setAddingProduct(false);
+  };
+
+  const handleRemoveProduct = (id: string) => {
+    onRoutineUpdate(routine.filter(p => p.id !== id));
+  };
 
   return (
     <div style={{
       flex: 1, overflowY: 'auto', background: '#f8fafc',
       fontFamily: "'DM Sans', system-ui, sans-serif",
     }}>
-      <div style={{ maxWidth: 720, margin: '0 auto', padding: '28px 20px 100px' }}>
+      <div style={{ maxWidth: 720, margin: '0 auto', padding: '28px 20px 40px' }}>
 
         {/* Greeting */}
         <div style={{ marginBottom: 24 }}>
@@ -63,7 +92,6 @@ export default function Dashboard({
           position: 'relative', overflow: 'hidden',
           boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
         }}>
-          {/* Teal top accent */}
           <div style={{
             position: 'absolute', top: 0, left: 0, right: 0, height: 3,
             background: `linear-gradient(90deg, ${TEAL}, #06b6d4)`,
@@ -81,7 +109,6 @@ export default function Dashboard({
               <div style={{ fontSize: 13, color: '#64748b', marginBottom: 14, lineHeight: 1.5 }}>
                 Personalised advice based on your {profile.skinType?.toLowerCase()} skin profile
               </div>
-              {/* Fake input */}
               <div
                 onClick={() => onOpenChat()}
                 style={{
@@ -100,7 +127,6 @@ export default function Dashboard({
                   color: '#fff', fontSize: 14, flexShrink: 0,
                 }}>→</div>
               </div>
-              {/* Chips */}
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {SUGGESTIONS.map((s, i) => (
                   <button key={i} onClick={() => onOpenChat(s)} style={{
@@ -164,15 +190,22 @@ export default function Dashboard({
           ))}
         </div>
 
-        {/* Routine preview */}
+        {/* Routine — inline, no sidebar */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
           <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', color: '#94a3b8' }}>
             My Routine
           </div>
-          <button onClick={onOpenRoutine} style={{
-            background: 'none', border: 'none', cursor: 'pointer',
-            fontSize: 12, color: TEAL, fontWeight: 600, fontFamily: 'inherit',
-          }}>Edit →</button>
+          <button onClick={() => setAddingProduct(v => !v)} style={{
+            background: addingProduct ? TEAL : 'none',
+            border: addingProduct ? 'none' : 'none',
+            cursor: 'pointer', fontSize: 12,
+            color: addingProduct ? '#fff' : TEAL,
+            fontWeight: 600, fontFamily: 'inherit',
+            padding: addingProduct ? '4px 10px' : '0',
+            borderRadius: 8,
+          }}>
+            {addingProduct ? '✕ Cancel' : '+ Add product'}
+          </button>
         </div>
 
         <div style={{
@@ -180,47 +213,106 @@ export default function Dashboard({
           padding: '16px', marginBottom: 20,
           boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
         }}>
+          {/* AM/PM tabs */}
+          <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
+            {(['AM', 'PM'] as const).map(tab => (
+              <button key={tab} onClick={() => setRoutineTab(tab)} style={{
+                padding: '5px 16px', borderRadius: 20,
+                background: routineTab === tab ? TEAL : '#f1f5f9',
+                color: routineTab === tab ? '#fff' : '#64748b',
+                border: 'none', fontSize: 12, fontWeight: 600,
+                cursor: 'pointer', fontFamily: 'inherit',
+              }}>
+                {tab === 'AM' ? '☀ Morning' : '☾ Evening'}
+                {tab === 'AM' && amRoutine.length > 0 && (
+                  <span style={{ marginLeft: 6, background: routineTab === 'AM' ? 'rgba(255,255,255,0.3)' : TEAL, color: '#fff', borderRadius: 8, padding: '1px 5px', fontSize: 10 }}>{amRoutine.length}</span>
+                )}
+                {tab === 'PM' && pmRoutine.length > 0 && (
+                  <span style={{ marginLeft: 6, background: routineTab === 'PM' ? 'rgba(255,255,255,0.3)' : TEAL, color: '#fff', borderRadius: 8, padding: '1px 5px', fontSize: 10 }}>{pmRoutine.length}</span>
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Add product form */}
+          {addingProduct && (
+            <div style={{
+              background: TEAL_LIGHT, border: `1px solid ${TEAL_MID}`,
+              borderRadius: 12, padding: '14px', marginBottom: 12,
+            }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: TEAL, marginBottom: 10 }}>Add a product</div>
+              <input
+                value={newName}
+                onChange={e => setNewName(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleAddProduct()}
+                placeholder="Product name (e.g. CeraVe Moisturising Cream)"
+                style={{
+                  width: '100%', padding: '9px 12px', borderRadius: 8,
+                  border: '1px solid #cbd5e1', fontSize: 13, fontFamily: 'inherit',
+                  marginBottom: 8, boxSizing: 'border-box', outline: 'none',
+                  background: '#fff',
+                }}
+                autoFocus
+              />
+              <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+                <select value={newType} onChange={e => setNewType(e.target.value)} style={{
+                  flex: 1, padding: '8px 10px', borderRadius: 8, border: '1px solid #cbd5e1',
+                  fontSize: 13, fontFamily: 'inherit', background: '#fff', outline: 'none',
+                }}>
+                  {PRODUCT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+                <select value={newTime} onChange={e => setNewTime(e.target.value as 'AM' | 'PM' | 'Both')} style={{
+                  flex: 1, padding: '8px 10px', borderRadius: 8, border: '1px solid #cbd5e1',
+                  fontSize: 13, fontFamily: 'inherit', background: '#fff', outline: 'none',
+                }}>
+                  <option value="AM">Morning (AM)</option>
+                  <option value="PM">Evening (PM)</option>
+                  <option value="Both">Both</option>
+                </select>
+              </div>
+              <button onClick={handleAddProduct} disabled={!newName.trim()} style={{
+                width: '100%', padding: '9px', background: newName.trim() ? TEAL : '#e2e8f0',
+                border: 'none', borderRadius: 8, color: newName.trim() ? '#fff' : '#94a3b8',
+                fontSize: 13, fontWeight: 600, cursor: newName.trim() ? 'pointer' : 'default',
+                fontFamily: 'inherit',
+              }}>Add to routine</button>
+            </div>
+          )}
+
           {displayRoutine.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '16px 0' }}>
               <div style={{ fontSize: 24, marginBottom: 8 }}>📋</div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: '#0f172a', marginBottom: 4 }}>No routine yet</div>
-              <div style={{ fontSize: 13, color: '#94a3b8', marginBottom: 14 }}>Add your products to track your routine</div>
-              <button onClick={onOpenRoutine} style={{
-                padding: '8px 20px', background: TEAL, border: 'none',
-                borderRadius: 8, color: '#fff', fontSize: 13, fontWeight: 600,
-                cursor: 'pointer', fontFamily: 'inherit',
-              }}>Build my routine</button>
+              <div style={{ fontSize: 14, fontWeight: 600, color: '#0f172a', marginBottom: 4 }}>
+                No {routineTab === 'AM' ? 'morning' : 'evening'} products yet
+              </div>
+              <div style={{ fontSize: 13, color: '#94a3b8' }}>
+                Tap "+ Add product" above to build your routine
+              </div>
             </div>
           ) : (
-            <>
-              <div style={{
-                display: 'inline-block', fontSize: 11, fontWeight: 700,
-                color: TEAL, background: TEAL_LIGHT, border: `1px solid ${TEAL_MID}`,
-                padding: '3px 10px', borderRadius: 20, marginBottom: 12,
-              }}>{routineLabel} · {displayRoutine.length} step{displayRoutine.length !== 1 ? 's' : ''}</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
-                {displayRoutine.slice(0, 4).map((p, i) => (
-                  <div key={p.id} style={{
-                    display: 'flex', alignItems: 'center', gap: 10,
-                    padding: '8px 10px', background: '#f8fafc', borderRadius: 10,
-                  }}>
-                    <div style={{
-                      width: 22, height: 22, borderRadius: 6, background: TEAL,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      color: '#fff', fontSize: 11, fontWeight: 700, flexShrink: 0,
-                    }}>{i + 1}</div>
-                    <div style={{ flex: 1, fontSize: 13, fontWeight: 500, color: '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</div>
-                    <div style={{ fontSize: 11, color: '#94a3b8', flexShrink: 0 }}>{p.type || ''}</div>
-                  </div>
-                ))}
-                {displayRoutine.length > 4 && (
-                  <button onClick={onOpenRoutine} style={{
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+              {displayRoutine.map((p, i) => (
+                <div key={p.id} style={{
+                  display: 'flex', alignItems: 'center', gap: 10,
+                  padding: '8px 10px', background: '#f8fafc', borderRadius: 10,
+                }}>
+                  <div style={{
+                    width: 22, height: 22, borderRadius: 6, background: TEAL,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: '#fff', fontSize: 11, fontWeight: 700, flexShrink: 0,
+                  }}>{i + 1}</div>
+                  <div style={{ flex: 1, fontSize: 13, fontWeight: 500, color: '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</div>
+                  <div style={{ fontSize: 11, color: '#94a3b8', flexShrink: 0 }}>{p.type || ''}</div>
+                  <button onClick={() => handleRemoveProduct(p.id)} style={{
                     background: 'none', border: 'none', cursor: 'pointer',
-                    fontSize: 12, color: '#94a3b8', fontFamily: 'inherit', textAlign: 'left', padding: '4px 0',
-                  }}>+{displayRoutine.length - 4} more…</button>
-                )}
-              </div>
-            </>
+                    color: '#cbd5e1', fontSize: 16, padding: '0 2px', flexShrink: 0, lineHeight: 1,
+                  }}
+                    onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.color = '#ef4444'}
+                    onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.color = '#cbd5e1'}
+                  >×</button>
+                </div>
+              ))}
+            </div>
           )}
         </div>
 
