@@ -191,7 +191,20 @@ export default function Landing({ onStart, hasProfile, onResume }: LandingProps)
           )}
         </div>
       </div>
-
+    <div style={{
+          marginTop: 32,
+          background: TEAL_LIGHT,
+          border: 1px solid ${TEAL_MID},
+          borderRadius: 12,
+          padding: '14px 24px',
+          textAlign: 'center',
+          fontSize: 14,
+          color: TEAL,
+          maxWidth: 960,
+          margin: '32px auto 0',
+        }}>
+       🗓️ <strong>On the roadmap:</strong> skin journey tracking, monthly insight recaps, conversation memory and more — Skinsight gets smarter the longer you use it.
+        </div>
       {/* How it works */}
       <div style={{
         background: '#fafafa',
@@ -416,8 +429,7 @@ export default function Landing({ onStart, hasProfile, onResume }: LandingProps)
         color: '#94a3b8',
         borderTop: '1px solid #f1f5f9',
       }}>
-        Skinsight provides general skincare guidance and is not a substitute for professional dermatological advice.
-      </div>
+Skinsight provides general skincare guidance and is not a substitute for professional dermatological advice. <br /><br /> Got feedback? We'd love to hear it — <a href="mailto:martinandmirella@gmail.com" style={{ color: TEAL, textDecoration: 'none' }}>martinandmirella@gmail.com</a>      </div>
     </div>
   );
 }
