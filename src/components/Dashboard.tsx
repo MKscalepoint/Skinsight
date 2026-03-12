@@ -15,7 +15,6 @@ interface DashboardProps {
   onOpenIngredients: () => void;
   onOpenCheckProducts: () => void;
   onOpenScamCheck: () => void;
-  onOpenRoutine: () => void;
   onEditProfile: () => void;
   onRoutineUpdate: (r: RoutineProduct[]) => void;
 }
@@ -31,7 +30,7 @@ const PRODUCT_TYPES = ['Cleanser', 'Toner', 'Serum', 'Eye cream', 'Moisturiser',
 
 export default function Dashboard({
   profile, routine, onOpenChat, onOpenIngredients,
-  onOpenCheckProducts, onOpenScamCheck, onOpenRoutine, onEditProfile, onRoutineUpdate,
+  onOpenCheckProducts, onOpenScamCheck, onEditProfile, onRoutineUpdate,
 }: DashboardProps) {
 
   const hour = new Date().getHours();
