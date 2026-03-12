@@ -9,7 +9,7 @@ const TEAL_MID = '#ccfbf1';
 const FAQS = [
   {
     q: "Why not just use ChatGPT?",
-    a: "Great question — and honestly, you could. But here's the difference: ChatGPT is a blank slate every single time. It doesn't know your skin type, your concerns, your sensitivities, or what products you're already using. Skinsight builds a profile around you and carries that context into every conversation. It also has dedicated tools — like the ingredient decoder and compatibility checker — built specifically for skincare. Think of it as the difference between googling your symptoms and talking to a doctor who already knows your history."
+    a: "Great question — and honestly, you could. But here's the difference: ChatGPT is a general-purpose assistant — it might remember you mentioned dry skin once, but it doesn't hold a structured profile of your skin type, concerns, sensitivities and experience level that shapes every single response. It also has none of the dedicated tools — ingredient decoder, compatibility checker, routine builder — that Skinsight is built around. And if you've ever tried using ChatGPT for something ongoing, you'll know the pain — conversations pile up with no organisation, and finding what you discussed last week means scrolling through dozens of chats. Skinsight keeps everything in one place: your profile, your routine, your history, all structured and accessible."
   },
   {
     q: "How is advice personalised to me?",
