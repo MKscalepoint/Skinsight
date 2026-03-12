@@ -1,8 +1,75 @@
 'use client';
 
+import { useState } from 'react';
+
 const TEAL = '#0d9488';
 const TEAL_LIGHT = '#f0fdfa';
 const TEAL_MID = '#ccfbf1';
+
+const FAQS = [
+  {
+    q: "Why not just use ChatGPT?",
+    a: "Great question — and honestly, you could. But here's the difference: ChatGPT is a blank slate every single time. It doesn't know your skin type, your concerns, your sensitivities, or what products you're already using. Skinsight builds a profile around you and carries that context into every conversation. It also has dedicated tools — like the ingredient decoder and compatibility checker — built specifically for skincare. Think of it as the difference between googling your symptoms and talking to a doctor who already knows your history."
+  },
+  {
+    q: "How is advice personalised to me?",
+    a: "When you first join, you answer 5 quick questions about your skin type, main concerns, experience level, age range, and any sensitivities. Skinsight uses that profile to tailor every single response — so if you have oily, acne-prone skin, you'll never get advice designed for dry or mature skin. The more you use it, the more context builds up, making recommendations increasingly specific to you."
+  },
+  {
+    q: "How accurate is the ingredient analysis?",
+    a: "Skinsight's ingredient knowledge is based on published dermatological research and widely accepted skincare science. It knows about ingredient interactions, pH sensitivities, active concentrations, and formulation considerations. That said, skincare science is always evolving and individual skin can be unpredictable — so we always recommend patch testing anything new, and seeing a dermatologist for persistent concerns. Think of Skinsight as a very well-read friend, not a replacement for a professional diagnosis."
+  },
+  {
+    q: "Is this real medical advice?",
+    a: "No — and we're upfront about that. Skinsight provides general skincare guidance based on ingredient science and best practices. It's not a substitute for a dermatologist, and it won't diagnose skin conditions. If you have a medical concern — persistent acne, rosacea, eczema, or anything that's getting worse — please see a qualified professional. What Skinsight is great at is helping you build a smart, safe routine and understand what you're putting on your skin."
+  },
+  {
+    q: "Is my data private and safe?",
+    a: "Your skin profile and routine are stored locally on your own device — we don't store them on our servers or share them with anyone. Conversations are processed via the Anthropic AI API to generate responses, but no personally identifiable information is attached to those requests. We'll always be transparent about how your data is used, and we'll never sell it."
+  },
+  {
+    q: "Is it free? What does it cost?",
+    a: "Skinsight is currently free to use while we're in early access. We're gathering feedback from real users before deciding how to structure things long-term. If a paid tier is introduced, core features will always remain accessible for free — we believe everyone deserves good skincare guidance, not just people who can afford a dermatologist."
+  },
+];
+
+function FAQItem({ q, a }: { q: string; a: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{
+      borderBottom: '1px solid #f1f5f9',
+      overflow: 'hidden',
+    }}>
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{
+          width: '100%', padding: '20px 0',
+          background: 'transparent', border: 'none',
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          cursor: 'pointer', fontFamily: 'inherit', gap: 16, textAlign: 'left',
+        }}
+      >
+        <span style={{ fontSize: 16, fontWeight: 600, color: '#0f172a', lineHeight: 1.4 }}>{q}</span>
+        <span style={{
+          width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
+          background: open ? TEAL : '#f1f5f9',
+          color: open ? '#fff' : '#64748b',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 18, fontWeight: 300, transition: 'all 0.2s ease',
+          transform: open ? 'rotate(45deg)' : 'rotate(0deg)',
+        }}>+</span>
+      </button>
+      {open && (
+        <div style={{
+          fontSize: 15, color: '#475569', lineHeight: 1.75,
+          paddingBottom: 20, paddingRight: 44,
+        }}>
+          {a}
+        </div>
+      )}
+    </div>
+  );
+}
 
 interface LandingProps {
   onStart: () => void;
@@ -211,6 +278,31 @@ export default function Landing({ onStart, hasProfile, onResume }: LandingProps)
               fontWeight: 500,
             }}>{q}</div>
           ))}
+        </div>
+      </div>
+
+      {/* FAQ */}
+      <div style={{
+        background: '#fafafa',
+        borderTop: '1px solid #f1f5f9',
+        borderBottom: '1px solid #f1f5f9',
+        padding: '64px 40px',
+      }}>
+        <div style={{ maxWidth: 720, margin: '0 auto' }}>
+          <h2 style={{
+            textAlign: 'center', fontSize: 30, fontWeight: 700,
+            color: '#0f172a', margin: '0 0 8px', letterSpacing: '-0.5px',
+          }}>
+            Questions you probably have
+          </h2>
+          <p style={{ textAlign: 'center', color: '#64748b', fontSize: 16, margin: '0 0 40px' }}>
+            Honest answers, no marketing fluff.
+          </p>
+          <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '0 28px' }}>
+            {FAQS.map((faq, i) => (
+              <FAQItem key={i} q={faq.q} a={faq.a} />
+            ))}
+          </div>
         </div>
       </div>
 
