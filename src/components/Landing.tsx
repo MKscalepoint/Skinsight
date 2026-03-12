@@ -8,16 +8,12 @@ const TEAL_MID = '#ccfbf1';
 
 const FAQS = [
   {
-    q: "Why not just use ChatGPT?",
-    a: "Great question — and honestly, you could. But here's the difference: ChatGPT is a general-purpose assistant — it might remember you mentioned dry skin once, but it doesn't hold a structured profile of your skin type, concerns, sensitivities and experience level that shapes every single response. It also has none of the dedicated tools — ingredient decoder, compatibility checker, routine builder — that Skinsight is built around. And if you've ever tried using ChatGPT for something ongoing, you'll know the pain — conversations pile up with no organisation, and finding what you discussed last week means scrolling through dozens of chats. Skinsight keeps everything in one place: your profile, your routine, your history, all structured and accessible."
+    q: "How accurate is the ingredient analysis?",
+    a: "Skinsight's ingredient knowledge is based on published dermatological research and widely accepted skincare science. It knows about ingredient interactions, pH sensitivities, active concentrations, and formulation considerations. That said, skincare science is always evolving and individual skin can be unpredictable — so we always recommend patch testing anything new, and seeing a dermatologist for persistent concerns. Think of Skinsight as a very well-read friend, not a replacement for a professional diagnosis."
   },
   {
     q: "How is advice personalised to me?",
     a: "When you first join, you answer 5 quick questions about your skin type, main concerns, experience level, age range, and any sensitivities. Skinsight uses that profile to tailor every single response — so if you have oily, acne-prone skin, you'll never get advice designed for dry or mature skin. The more you use it, the more context builds up, making recommendations increasingly specific to you."
-  },
-  {
-    q: "How accurate is the ingredient analysis?",
-    a: "Skinsight's ingredient knowledge is based on published dermatological research and widely accepted skincare science. It knows about ingredient interactions, pH sensitivities, active concentrations, and formulation considerations. That said, skincare science is always evolving and individual skin can be unpredictable — so we always recommend patch testing anything new, and seeing a dermatologist for persistent concerns. Think of Skinsight as a very well-read friend, not a replacement for a professional diagnosis."
   },
   {
     q: "Is this real medical advice?",
@@ -30,6 +26,10 @@ const FAQS = [
   {
     q: "Is it free? What does it cost?",
     a: "Skinsight is currently free to use while we're in early access. We're gathering feedback from real users before deciding how to structure things long-term. If a paid tier is introduced, core features will always remain accessible for free — we believe everyone deserves good skincare guidance, not just people who can afford a dermatologist."
+  },
+  {
+    q: "Why not just use ChatGPT?",
+    a: "Great question — and honestly, you could. But here's the difference: ChatGPT is a general-purpose assistant — it might remember you mentioned dry skin once, but it doesn't hold a structured profile of your skin type, concerns, sensitivities and experience level that shapes every single response. It also has none of the dedicated tools — ingredient decoder, compatibility checker, routine builder — that Skinsight is built around. And if you've ever tried using ChatGPT for something ongoing, you'll know the pain — conversations pile up with no organisation, and finding what you discussed last week means scrolling through dozens of chats. Skinsight keeps everything in one place: your profile, your routine, your history, all structured and accessible."
   },
 ];
 
