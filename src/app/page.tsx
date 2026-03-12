@@ -78,8 +78,18 @@ export default function App() {
     setHydrated(true);
   }, []);
 
+  const lastAssistantRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (loading) {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [loading]);
+
+  useEffect(() => {
+    if (!loading && messages.length > 1 && messages[messages.length - 1].role === 'assistant') {
+      lastAssistantRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }, [messages, loading]);
 
   const startNewSession = useCallback((p: UserProfile) => {
@@ -277,40 +287,48 @@ export default function App() {
             </button>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            {/* Skin type badge - hide on very small screens */}
             {profile?.skinType && (
               <div style={{
                 fontSize: 12, color: TEAL, background: TEAL_LIGHT,
                 padding: '4px 10px', borderRadius: 20, border: `1px solid ${TEAL}33`,
-                fontWeight: 500,
-              }}>{profile.skinType} skin</div>
+                fontWeight: 500, whiteSpace: 'nowrap',
+              }} className="hide-mobile">{profile.skinType} skin</div>
             )}
-            <button onClick={() => setEditingProfile(true)} style={{
-              padding: '6px 12px', background: 'transparent',
+            {/* Edit profile - icon only on mobile */}
+            <button onClick={() => setEditingProfile(true)} title="Edit profile" style={{
+              padding: '6px 10px', background: 'transparent',
               border: '1px solid #e2e8f0', borderRadius: 8,
               fontSize: 13, color: '#64748b', cursor: 'pointer', fontFamily: 'inherit',
+              display: 'flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap',
             }}
               onMouseEnter={e => { (e.currentTarget).style.borderColor = TEAL; (e.currentTarget).style.color = TEAL; }}
               onMouseLeave={e => { (e.currentTarget).style.borderColor = '#e2e8f0'; (e.currentTarget).style.color = '#64748b'; }}
-            >✎ Edit profile</button>
-            <button onClick={handleStartOver} style={{
-              padding: '6px 12px', background: 'transparent',
+            >
+              <span>✎</span>
+              <span className="hide-mobile">Edit</span>
+            </button>
+            <button onClick={handleStartOver} title="Start over" style={{
+              padding: '6px 10px', background: 'transparent',
               border: '1px solid #e2e8f0', borderRadius: 8,
               fontSize: 13, color: '#64748b', cursor: 'pointer', fontFamily: 'inherit',
+              whiteSpace: 'nowrap',
             }}
               onMouseEnter={e => { (e.currentTarget).style.borderColor = '#0f172a'; (e.currentTarget).style.color = '#0f172a'; }}
               onMouseLeave={e => { (e.currentTarget).style.borderColor = '#e2e8f0'; (e.currentTarget).style.color = '#64748b'; }}
-            >Start over</button>
-            <button onClick={() => setShowRoutine(s => !s)} style={{
-              padding: '6px 14px',
+            ><span className="hide-mobile">Start over</span><span className="show-mobile">↺</span></button>
+            <button onClick={() => setShowRoutine(s => !s)} title="My Routine" style={{
+              padding: '6px 10px',
               background: showRoutine ? TEAL : 'transparent',
               border: `1px solid ${showRoutine ? TEAL : '#e2e8f0'}`,
               borderRadius: 8, fontSize: 13,
               color: showRoutine ? '#fff' : '#64748b',
               cursor: 'pointer', fontFamily: 'inherit', fontWeight: 500,
-              display: 'flex', alignItems: 'center', gap: 6,
+              display: 'flex', alignItems: 'center', gap: 5, whiteSpace: 'nowrap',
             }}>
-              My Routine
+              <span className="hide-mobile">My Routine</span>
+              <span className="show-mobile">☰</span>
               {routine.length > 0 && (
                 <span style={{
                   background: showRoutine ? 'rgba(255,255,255,0.25)' : TEAL,
@@ -352,8 +370,9 @@ export default function App() {
         }}>
           {messages.map((msg, i) => {
             const isUser = msg.role === 'user';
+            const isLastAssistant = !isUser && i === messages.length - 1;
             return (
-              <div key={i} style={{
+              <div key={i} ref={isLastAssistant ? lastAssistantRef : null} style={{
                 display: 'flex', justifyContent: isUser ? 'flex-end' : 'flex-start', marginBottom: 20,
               }}>
                 {!isUser && (
@@ -476,6 +495,12 @@ export default function App() {
         @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
         * { box-sizing: border-box; }
         body { margin: 0; }
+        @media (max-width: 600px) {
+          .hide-mobile { display: none !important; }
+        }
+        @media (min-width: 601px) {
+          .show-mobile { display: none !important; }
+        }
       `}</style>
     </div>
   );
