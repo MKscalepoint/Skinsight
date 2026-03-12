@@ -296,7 +296,7 @@ export default function Landing({ onStart, hasProfile, onResume }: LandingProps)
                 border: `1px solid ${TEAL_MID}`,
                 borderRadius: 20,
                 padding: '3px 10px',
-                fontSize: 11, fontWeight: i600, color: TEAL,
+                fontSize: 11, fontWeight: 600, color: TEAL,
                 letterSpacing: '0.2px',
               }}>{label} — free now</div>
               <div style={{ fontSize: 32, marginBottom: 14 }}>{icon}</div>
