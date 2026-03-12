@@ -1,18 +1,16 @@
 import { ChatSession, RoutineProduct, UserProfile } from '@/types';
 
 const KEYS = {
-  SESSIONS: 'glowguide_sessions',
-  ROUTINE: 'glowguide_routine',
-  PROFILE: 'glowguide_profile',
-  ACTIVE_SESSION: 'glowguide_active_session',
+  SESSIONS: 'skinsight_sessions',
+  ROUTINE: 'skinsight_routine',
+  PROFILE: 'skinsight_profile',
+  ACTIVE_SESSION: 'skinsight_active_session',
 };
 
-// Sessions
 export function getSessions(): ChatSession[] {
   if (typeof window === 'undefined') return [];
-  try {
-    return JSON.parse(localStorage.getItem(KEYS.SESSIONS) || '[]');
-  } catch { return []; }
+  try { return JSON.parse(localStorage.getItem(KEYS.SESSIONS) || '[]'); }
+  catch { return []; }
 }
 
 export function saveSession(session: ChatSession): void {
@@ -24,8 +22,7 @@ export function saveSession(session: ChatSession): void {
 }
 
 export function deleteSession(id: string): void {
-  const sessions = getSessions().filter(s => s.id !== id);
-  localStorage.setItem(KEYS.SESSIONS, JSON.stringify(sessions));
+  localStorage.setItem(KEYS.SESSIONS, JSON.stringify(getSessions().filter(s => s.id !== id)));
 }
 
 export function getActiveSessionId(): string | null {
@@ -37,19 +34,16 @@ export function setActiveSessionId(id: string): void {
   localStorage.setItem(KEYS.ACTIVE_SESSION, id);
 }
 
-// Routine
 export function getRoutine(): RoutineProduct[] {
   if (typeof window === 'undefined') return [];
-  try {
-    return JSON.parse(localStorage.getItem(KEYS.ROUTINE) || '[]');
-  } catch { return []; }
+  try { return JSON.parse(localStorage.getItem(KEYS.ROUTINE) || '[]'); }
+  catch { return []; }
 }
 
 export function saveRoutine(routine: RoutineProduct[]): void {
   localStorage.setItem(KEYS.ROUTINE, JSON.stringify(routine));
 }
 
-// Profile
 export function getProfile(): UserProfile | null {
   if (typeof window === 'undefined') return null;
   try {
