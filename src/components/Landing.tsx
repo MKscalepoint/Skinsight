@@ -108,13 +108,15 @@ export default function Landing({ onStart, hasProfile, onResume }: LandingProps)
         </div>
         {hasProfile && (
           <button onClick={onResume} style={{
-            padding: '8px 18px',
+            padding: '8px 16px',
             background: TEAL,
             color: '#fff', border: 'none', borderRadius: 8,
-            fontSize: 14, fontWeight: 600, cursor: 'pointer',
-            fontFamily: 'inherit',
+            fontSize: 13, fontWeight: 600, cursor: 'pointer',
+            fontFamily: 'inherit', whiteSpace: 'nowrap',
+            maxWidth: '55vw', overflow: 'hidden', textOverflow: 'ellipsis',
           }}>
-            Continue my consultation →
+            <span className="hide-mobile-landing">Continue my consultation →</span>
+            <span className="show-mobile-landing">Continue →</span>
           </button>
         )}
       </nav>
@@ -306,20 +308,7 @@ export default function Landing({ onStart, hasProfile, onResume }: LandingProps)
           ))}
         </div>
       </div>
-      <div style={{
-          marginTop: 32,
-          background: TEAL_LIGHT,
-          border: `1px solid ${TEAL_MID}`,
-          borderRadius: 12,
-          padding: '14px 24px',
-          textAlign: 'center',
-          fontSize: 14,
-          color: TEAL,
-          maxWidth: 960,
-          margin: '32px auto 0',
-        }}>
-          🗓️ <strong>On the roadmap:</strong> skin journey tracking, monthly insight recaps, seasonal advice & routine comparisons and more — Skinsight gets smarter the more you use it.
-        </div>
+
             {/* What you can ask */}
       <div style={{ maxWidth: 860, margin: '0 auto', padding: '64px 40px' }}>
         <h2 style={{
@@ -409,6 +398,16 @@ export default function Landing({ onStart, hasProfile, onResume }: LandingProps)
         </button>
       </div>
 
+      <style>{`
+        @media (max-width: 480px) {
+          .hide-mobile-landing { display: none !important; }
+          .show-mobile-landing { display: inline !important; }
+        }
+        @media (min-width: 481px) {
+          .show-mobile-landing { display: none !important; }
+        }
+      `}</style>
+
       {/* Footer */}
       <div style={{
         padding: '24px 40px',
@@ -417,9 +416,8 @@ export default function Landing({ onStart, hasProfile, onResume }: LandingProps)
         color: '#94a3b8',
         borderTop: '1px solid #f1f5f9',
       }}>
-Skinsight provides general skincare guidance and is not a substitute for professional dermatological advice.
-        <br /><br />
-        Got feedback? We'd love to hear it — <a href="mailto:martinandmirella@gmail.com" style={{ color: TEAL, textDecoration: 'none' }}>martinandmirella@gmail.com</a>      </div>
+        Skinsight provides general skincare guidance and is not a substitute for professional dermatological advice.
+      </div>
     </div>
   );
 }
