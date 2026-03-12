@@ -512,7 +512,6 @@ export default function App() {
             onOpenIngredients={() => setShowIngredients(true)}
             onOpenCheckProducts={() => setShowCheckProducts(true)}
             onOpenScamCheck={() => setShowScamCheck(true)}
-            onOpenRoutine={() => {}}
             onEditProfile={() => setEditingProfile(true)}
             onRoutineUpdate={handleRoutineUpdate}
           />
