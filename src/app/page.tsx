@@ -516,8 +516,8 @@ export default function App() {
       </div>
 
       {showRoutine && <RoutineSidebar routine={routine} onUpdate={handleRoutineUpdate} onClose={() => setShowRoutine(false)} />}
-      {showIngredients && <IngredientDecoder onClose={() => setShowIngredients(false)} />}
-      {showCheckProducts && <CheckProducts onClose={() => setShowCheckProducts(false)} />}
+      {showIngredients && <IngredientDecoder profile={profile} onClose={() => setShowIngredients(false)} />}
+      {showCheckProducts && <CheckProducts profile={profile} onClose={() => setShowCheckProducts(false)} />}
 
       <style>{`
         @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
