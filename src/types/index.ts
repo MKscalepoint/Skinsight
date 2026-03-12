@@ -38,6 +38,22 @@ export interface OnboardingQuestion {
   field: keyof Omit<UserProfile, 'completed'>;
 }
 
+export interface ProductEntry {
+  id: string;
+  name: string;
+  type: string;
+  ingredients?: string;
+}
+
+export interface AnalysisReport {
+  summary: string;
+  layeringOrder: { step: number; product: string; reason: string }[];
+  conflicts: { products: string[]; issue: string; severity: 'high' | 'medium' | 'low' }[];
+  recommendations: string[];
+  amRoutine: string[];
+  pmRoutine: string[];
+}
+
 export const ONBOARDING_QUESTIONS: OnboardingQuestion[] = [
   {
     id: 'skinType',
