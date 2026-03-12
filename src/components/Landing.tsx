@@ -8,12 +8,16 @@ const TEAL_MID = '#ccfbf1';
 
 const FAQS = [
   {
-    q: "How accurate is the ingredient analysis?",
-    a: "Skinsight's ingredient knowledge is based on published dermatological research and widely accepted skincare science. It knows about ingredient interactions, pH sensitivities, active concentrations, and formulation considerations. That said, skincare science is always evolving and individual skin can be unpredictable — so we always recommend patch testing anything new, and seeing a dermatologist for persistent concerns. Think of Skinsight as a very well-read friend, not a replacement for a professional diagnosis."
+    q: "Why not just use ChatGPT?",
+    a: "Great question — and honestly, you could. But here's the difference: ChatGPT is a blank slate every single time. It doesn't know your skin type, your concerns, your sensitivities, or what products you're already using. Skinsight builds a profile around you and carries that context into every conversation. It also has dedicated tools — like the ingredient decoder and compatibility checker — built specifically for skincare. Think of it as the difference between googling your symptoms and talking to a doctor who already knows your history."
   },
   {
     q: "How is advice personalised to me?",
     a: "When you first join, you answer 5 quick questions about your skin type, main concerns, experience level, age range, and any sensitivities. Skinsight uses that profile to tailor every single response — so if you have oily, acne-prone skin, you'll never get advice designed for dry or mature skin. The more you use it, the more context builds up, making recommendations increasingly specific to you."
+  },
+  {
+    q: "How accurate is the ingredient analysis?",
+    a: "Skinsight's ingredient knowledge is based on published dermatological research and widely accepted skincare science. It knows about ingredient interactions, pH sensitivities, active concentrations, and formulation considerations. That said, skincare science is always evolving and individual skin can be unpredictable — so we always recommend patch testing anything new, and seeing a dermatologist for persistent concerns. Think of Skinsight as a very well-read friend, not a replacement for a professional diagnosis."
   },
   {
     q: "Is this real medical advice?",
@@ -26,10 +30,6 @@ const FAQS = [
   {
     q: "Is it free? What does it cost?",
     a: "Skinsight is currently free to use while we're in early access. We're gathering feedback from real users before deciding how to structure things long-term. If a paid tier is introduced, core features will always remain accessible for free — we believe everyone deserves good skincare guidance, not just people who can afford a dermatologist."
-  },
-  {
-    q: "Why not just use ChatGPT?",
-    a: "Great question — and honestly, you could. But here's the difference: ChatGPT is a general-purpose assistant — it might remember you mentioned dry skin once, but it doesn't hold a structured profile of your skin type, concerns, sensitivities and experience level that shapes every single response. It also has none of the dedicated tools — ingredient decoder, compatibility checker, routine builder — that Skinsight is built around. And if you've ever tried using ChatGPT for something ongoing, you'll know the pain — conversations pile up with no organisation, and finding what you discussed last week means scrolling through dozens of chats. Skinsight keeps everything in one place: your profile, your routine, your history, all structured and accessible."
   },
 ];
 
@@ -244,7 +244,70 @@ export default function Landing({ onStart, hasProfile, onResume }: LandingProps)
         </div>
       </div>
 
-      {/* What you can ask */}
+      {/* Premium Tools */}
+      <div style={{ maxWidth: 960, margin: '0 auto', padding: '64px 40px' }}>
+        <div style={{ textAlign: 'center', marginBottom: 48 }}>
+          <h2 style={{
+            fontSize: 30, fontWeight: 700, color: '#0f172a',
+            margin: '0 0 12px', letterSpacing: '-0.5px',
+          }}>
+            Powerful tools included
+          </h2>
+          <p style={{ color: '#64748b', fontSize: 16, margin: 0 }}>
+            Features usually locked behind a paywall — free while we're in early access.
+          </p>
+        </div>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+          gap: 20,
+        }}>
+          {[
+            {
+              icon: '🔬',
+              label: 'Premium feature',
+              title: 'Ingredient Decoder',
+              desc: 'Paste any INCI ingredient list and get a plain-English breakdown — what each ingredient does, whether anything is irritating, and red flags to watch out for.',
+            },
+            {
+              icon: '⚗️',
+              label: 'Premium feature',
+              title: 'Check Products',
+              desc: 'Add multiple products and get a full compatibility report — conflicts highlighted by severity, correct layering order, and which products belong in AM vs PM.',
+            },
+            {
+              icon: '📋',
+              label: 'Premium feature',
+              title: 'My Routine Builder',
+              desc: 'Build and save your personalised AM and PM routine as you go. Every product stored, ordered, and ready to reference whenever you need it.',
+            },
+          ].map(({ icon, label, title, desc }) => (
+            <div key={title} style={{
+              background: '#ffffff',
+              border: '1px solid #e2e8f0',
+              borderRadius: 16,
+              padding: '28px 24px',
+              position: 'relative',
+              overflow: 'hidden',
+            }}>
+              <div style={{
+                position: 'absolute', top: 16, right: 16,
+                background: TEAL_LIGHT,
+                border: `1px solid ${TEAL_MID}`,
+                borderRadius: 20,
+                padding: '3px 10px',
+                fontSize: 11, fontWeight: 600, color: TEAL,
+                letterSpacing: '0.2px',
+              }}>{label} — free now</div>
+              <div style={{ fontSize: 32, marginBottom: 14 }}>{icon}</div>
+              <div style={{ fontSize: 17, fontWeight: 700, color: '#0f172a', marginBottom: 10 }}>{title}</div>
+              <div style={{ fontSize: 14, color: '#64748b', lineHeight: 1.65 }}>{desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+            {/* What you can ask */}
       <div style={{ maxWidth: 860, margin: '0 auto', padding: '64px 40px' }}>
         <h2 style={{
           textAlign: 'center', fontSize: 30, fontWeight: 700,
