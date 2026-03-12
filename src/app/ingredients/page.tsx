@@ -442,6 +442,7 @@ export default function App() {
             onOpenScamCheck={() => setShowScamCheck(true)}
             onOpenRoutine={() => setShowRoutine(true)}
             onEditProfile={() => setEditingProfile(true)}
+            onRoutineUpdate={handleRoutineUpdate}
           />
         )}
 
