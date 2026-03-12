@@ -256,10 +256,10 @@ export default function App() {
     setShowScamCheck(false);
     setShowMobileMenu(false);
     setShowToolsMenu(false);
-    if (tab === 'home') { setView('dashboard'); setShowRoutine(false); }
-    else if (tab === 'chat') { setView('chat'); setShowRoutine(false); }
+    if (tab === 'home') { setView('dashboard'); }
+    else if (tab === 'chat') { setView('chat'); }
     else if (tab === 'tools') { setShowIngredients(true); }
-    else if (tab === 'routine') { setShowRoutine(true); setView(view === 'chat' ? 'chat' : 'dashboard'); }
+    else if (tab === 'routine') { setView('dashboard'); }
     else if (tab === 'profile') { setEditingProfile(true); }
   };
 
@@ -408,15 +408,18 @@ export default function App() {
               )}
             </div>
 
-            <button onClick={() => setShowRoutine(s => !s)} style={{
-              padding: '6px 12px', background: showRoutine ? TEAL : 'transparent',
-              border: `1px solid ${showRoutine ? TEAL : '#e2e8f0'}`, borderRadius: 8,
-              fontSize: 13, color: showRoutine ? '#fff' : '#64748b', cursor: 'pointer', fontFamily: 'inherit',
+            <button onClick={() => { setView('dashboard'); setActiveTab('home'); }} style={{
+              padding: '6px 12px', background: 'transparent',
+              border: '1px solid #e2e8f0', borderRadius: 8,
+              fontSize: 13, color: '#64748b', cursor: 'pointer', fontFamily: 'inherit',
               display: 'flex', alignItems: 'center', gap: 5,
-            }}>
+            }}
+              onMouseEnter={e => { (e.currentTarget).style.borderColor = TEAL; (e.currentTarget).style.color = TEAL; }}
+              onMouseLeave={e => { (e.currentTarget).style.borderColor = '#e2e8f0'; (e.currentTarget).style.color = '#64748b'; }}
+            >
               My Routine
               {routine.length > 0 && (
-                <span style={{ background: showRoutine ? 'rgba(255,255,255,0.25)' : TEAL, color: '#fff', borderRadius: 10, padding: '1px 6px', fontSize: 11, fontWeight: 700 }}>
+                <span style={{ background: TEAL, color: '#fff', borderRadius: 10, padding: '1px 6px', fontSize: 11, fontWeight: 700 }}>
                   {routine.length}
                 </span>
               )}
@@ -606,10 +609,10 @@ export default function App() {
           { tab: 'profile' as NavTab, emoji: '👤', label: 'Profile' },
         ]).map(({ tab, emoji, label }) => {
           const isActive = (
-            (tab === 'home' && isDashboard && !showRoutine && !anyToolOpen) ||
+            (tab === 'home' && isDashboard && !anyToolOpen) ||
             (tab === 'chat' && isChat) ||
             (tab === 'tools' && anyToolOpen) ||
-            (tab === 'routine' && showRoutine) ||
+            (tab === 'routine' && isDashboard && !anyToolOpen) ||
             (tab === 'profile' && editingProfile)
           );
           return (
@@ -630,7 +633,7 @@ export default function App() {
       <AppFooter />
 
       {/* ── Modals ── */}
-      {showRoutine && <RoutineSidebar routine={routine} onUpdate={handleRoutineUpdate} onClose={() => setShowRoutine(false)} />}
+      
       {showIngredients && <IngredientDecoder profile={profile} onClose={() => setShowIngredients(false)} />}
       {showCheckProducts && <CheckProducts profile={profile} onClose={() => setShowCheckProducts(false)} />}
       {showScamCheck && <ScamCheck profile={profile} onClose={() => setShowScamCheck(false)} />}
