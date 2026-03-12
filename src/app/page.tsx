@@ -59,6 +59,7 @@ export default function App() {
   const [showStartOverConfirm, setShowStartOverConfirm] = useState(false);
   const [showIngredients, setShowIngredients] = useState(false);
   const [showCheckProducts, setShowCheckProducts] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -80,6 +81,16 @@ export default function App() {
       setView('landing');
     }
     setHydrated(true);
+
+    // Handle deep links (e.g. /ingredients redirects here with a flag)
+    const openTool = sessionStorage.getItem('skinsight_open_tool');
+    if (openTool) {
+      sessionStorage.removeItem('skinsight_open_tool');
+      if (openTool === 'ingredients') {
+        setShowIngredients(true);
+        setView('chat');
+      }
+    }
   }, []);
 
   const lastAssistantRef = useRef<HTMLDivElement>(null);
@@ -292,76 +303,47 @@ export default function App() {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            {/* Skin type badge - hide on very small screens */}
-            {profile?.skinType && (
-              <div style={{
-                fontSize: 12, color: TEAL, background: TEAL_LIGHT,
-                padding: '4px 10px', borderRadius: 20, border: `1px solid ${TEAL}33`,
-                fontWeight: 500, whiteSpace: 'nowrap',
-              }} className="hide-mobile">{profile.skinType} skin</div>
-            )}
-            {/* Edit profile - icon only on mobile */}
-            <button onClick={() => setEditingProfile(true)} title="Edit profile" style={{
-              padding: '6px 10px', background: 'transparent',
-              border: '1px solid #e2e8f0', borderRadius: 8,
-              fontSize: 13, color: '#64748b', cursor: 'pointer', fontFamily: 'inherit',
-              display: 'flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap',
-            }}
-              onMouseEnter={e => { (e.currentTarget).style.borderColor = TEAL; (e.currentTarget).style.color = TEAL; }}
-              onMouseLeave={e => { (e.currentTarget).style.borderColor = '#e2e8f0'; (e.currentTarget).style.color = '#64748b'; }}
-            >
-              <span>✎</span>
-              <span className="hide-mobile">Edit</span>
-            </button>
-            <button onClick={handleStartOver} title="Start over" style={{
-              padding: '6px 10px', background: 'transparent',
-              border: '1px solid #e2e8f0', borderRadius: 8,
-              fontSize: 13, color: '#64748b', cursor: 'pointer', fontFamily: 'inherit',
-              whiteSpace: 'nowrap',
-            }}
-              onMouseEnter={e => { (e.currentTarget).style.borderColor = '#0f172a'; (e.currentTarget).style.color = '#0f172a'; }}
-              onMouseLeave={e => { (e.currentTarget).style.borderColor = '#e2e8f0'; (e.currentTarget).style.color = '#64748b'; }}
-            ><span className="hide-mobile">Start over</span><span className="show-mobile">↺</span></button>
-            <button onClick={() => { setShowIngredients(s => !s); setShowCheckProducts(false); setShowRoutine(false); }} title="Ingredient Decoder" style={{
-              padding: '6px 10px', background: showIngredients ? TEAL : 'transparent',
-              border: `1px solid ${showIngredients ? TEAL : '#e2e8f0'}`,
-              borderRadius: 8, fontSize: 13,
-              color: showIngredients ? '#fff' : '#64748b',
-              cursor: 'pointer', fontFamily: 'inherit', fontWeight: 500,
-              whiteSpace: 'nowrap',
-            }}>
-              <span>🔬</span>
-              <span className="hide-mobile" style={{ marginLeft: 4 }}>Ingredients</span>
-            </button>
-            <button onClick={() => { setShowCheckProducts(s => !s); setShowIngredients(false); setShowRoutine(false); }} title="Check Products" style={{
-              padding: '6px 10px', background: showCheckProducts ? TEAL : 'transparent',
-              border: `1px solid ${showCheckProducts ? TEAL : '#e2e8f0'}`,
-              borderRadius: 8, fontSize: 13,
-              color: showCheckProducts ? '#fff' : '#64748b',
-              cursor: 'pointer', fontFamily: 'inherit', fontWeight: 500,
-              whiteSpace: 'nowrap',
-            }}>
-              <span>⚗️</span>
-              <span className="hide-mobile" style={{ marginLeft: 4 }}>Check Products</span>
-            </button>
-            <button onClick={() => setShowRoutine(s => !s)} title="My Routine" style={{
-              padding: '6px 10px',
-              background: showRoutine ? TEAL : 'transparent',
-              border: `1px solid ${showRoutine ? TEAL : '#e2e8f0'}`,
-              borderRadius: 8, fontSize: 13,
-              color: showRoutine ? '#fff' : '#64748b',
-              cursor: 'pointer', fontFamily: 'inherit', fontWeight: 500,
-              display: 'flex', alignItems: 'center', gap: 5, whiteSpace: 'nowrap',
-            }}>
-              <span className="hide-mobile">My Routine</span>
-              <span className="show-mobile">☰</span>
-              {routine.length > 0 && (
-                <span style={{
-                  background: showRoutine ? 'rgba(255,255,255,0.25)' : TEAL,
-                  color: '#fff', borderRadius: 10, padding: '1px 6px', fontSize: 11, fontWeight: 700,
-                }}>{routine.length}</span>
+            {/* Desktop nav - full buttons */}
+            <div className="hide-mobile" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              {profile?.skinType && (
+                <div style={{ fontSize: 12, color: TEAL, background: TEAL_LIGHT, padding: '4px 10px', borderRadius: 20, border: `1px solid ${TEAL}33`, fontWeight: 500 }}>{profile.skinType} skin</div>
               )}
-            </button>
+              <button onClick={() => setEditingProfile(true)} style={{ padding: '6px 12px', background: 'transparent', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 13, color: '#64748b', cursor: 'pointer', fontFamily: 'inherit' }}
+                onMouseEnter={e => { (e.currentTarget).style.borderColor = TEAL; (e.currentTarget).style.color = TEAL; }}
+                onMouseLeave={e => { (e.currentTarget).style.borderColor = '#e2e8f0'; (e.currentTarget).style.color = '#64748b'; }}>✎ Edit</button>
+              <button onClick={handleStartOver} style={{ padding: '6px 12px', background: 'transparent', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 13, color: '#64748b', cursor: 'pointer', fontFamily: 'inherit' }}
+                onMouseEnter={e => { (e.currentTarget).style.borderColor = '#0f172a'; (e.currentTarget).style.color = '#0f172a'; }}
+                onMouseLeave={e => { (e.currentTarget).style.borderColor = '#e2e8f0'; (e.currentTarget).style.color = '#64748b'; }}>Start over</button>
+              <button onClick={() => { setShowIngredients(s => !s); setShowCheckProducts(false); setShowRoutine(false); }} style={{ padding: '6px 12px', background: showIngredients ? TEAL : 'transparent', border: `1px solid ${showIngredients ? TEAL : '#e2e8f0'}`, borderRadius: 8, fontSize: 13, color: showIngredients ? '#fff' : '#64748b', cursor: 'pointer', fontFamily: 'inherit' }}>🔬 Ingredients</button>
+              <button onClick={() => { setShowCheckProducts(s => !s); setShowIngredients(false); setShowRoutine(false); }} style={{ padding: '6px 12px', background: showCheckProducts ? TEAL : 'transparent', border: `1px solid ${showCheckProducts ? TEAL : '#e2e8f0'}`, borderRadius: 8, fontSize: 13, color: showCheckProducts ? '#fff' : '#64748b', cursor: 'pointer', fontFamily: 'inherit' }}>⚗️ Check</button>
+              <button onClick={() => setShowRoutine(s => !s)} style={{ padding: '6px 12px', background: showRoutine ? TEAL : 'transparent', border: `1px solid ${showRoutine ? TEAL : '#e2e8f0'}`, borderRadius: 8, fontSize: 13, color: showRoutine ? '#fff' : '#64748b', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 5 }}>
+                My Routine
+                {routine.length > 0 && <span style={{ background: showRoutine ? 'rgba(255,255,255,0.25)' : TEAL, color: '#fff', borderRadius: 10, padding: '1px 6px', fontSize: 11, fontWeight: 700 }}>{routine.length}</span>}
+              </button>
+            </div>
+
+            {/* Mobile nav - 3 icon buttons + menu */}
+            <div className="show-mobile" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <button onClick={() => { setShowIngredients(s => !s); setShowCheckProducts(false); setShowRoutine(false); setShowMobileMenu(false); }} style={{ width: 36, height: 36, borderRadius: 8, background: showIngredients ? TEAL : '#f8fafc', border: `1px solid ${showIngredients ? TEAL : '#e2e8f0'}`, cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Ingredient Decoder">🔬</button>
+              <button onClick={() => { setShowCheckProducts(s => !s); setShowIngredients(false); setShowRoutine(false); setShowMobileMenu(false); }} style={{ width: 36, height: 36, borderRadius: 8, background: showCheckProducts ? TEAL : '#f8fafc', border: `1px solid ${showCheckProducts ? TEAL : '#e2e8f0'}`, cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Check Products">⚗️</button>
+              <button onClick={() => { setShowRoutine(s => !s); setShowMobileMenu(false); }} style={{ width: 36, height: 36, borderRadius: 8, background: showRoutine ? TEAL : '#f8fafc', border: `1px solid ${showRoutine ? TEAL : '#e2e8f0'}`, cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }} title="My Routine">
+                📋
+                {routine.length > 0 && <span style={{ position: 'absolute', top: -4, right: -4, background: TEAL, color: '#fff', borderRadius: 8, padding: '1px 5px', fontSize: 10, fontWeight: 700 }}>{routine.length}</span>}
+              </button>
+              {/* More menu */}
+              <div style={{ position: 'relative' }}>
+                <button onClick={() => setShowMobileMenu(s => !s)} style={{ width: 36, height: 36, borderRadius: 8, background: showMobileMenu ? '#0f172a' : '#f8fafc', border: `1px solid ${showMobileMenu ? '#0f172a' : '#e2e8f0'}`, cursor: 'pointer', color: showMobileMenu ? '#fff' : '#64748b', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>⋯</button>
+                {showMobileMenu && (
+                  <div style={{ position: 'absolute', right: 0, top: 44, background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, boxShadow: '0 8px 24px rgba(0,0,0,0.12)', zIndex: 200, minWidth: 160, overflow: 'hidden' }}>
+                    {profile?.skinType && (
+                      <div style={{ padding: '10px 16px', borderBottom: '1px solid #f1f5f9', fontSize: 12, color: TEAL, fontWeight: 600, background: TEAL_LIGHT }}>{profile.skinType} skin</div>
+                    )}
+                    <button onClick={() => { setEditingProfile(true); setShowMobileMenu(false); }} style={{ width: '100%', padding: '12px 16px', background: 'transparent', border: 'none', borderBottom: '1px solid #f1f5f9', fontSize: 14, color: '#0f172a', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left' }}>✎ Edit profile</button>
+                    <button onClick={() => { handleStartOver(); setShowMobileMenu(false); }} style={{ width: '100%', padding: '12px 16px', background: 'transparent', border: 'none', fontSize: 14, color: '#0f172a', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left' }}>↺ Start over</button>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </header>
 
@@ -525,9 +507,11 @@ export default function App() {
         body { margin: 0; }
         @media (max-width: 600px) {
           .hide-mobile { display: none !important; }
+          .show-mobile { display: flex !important; }
         }
         @media (min-width: 601px) {
           .show-mobile { display: none !important; }
+          .hide-mobile { display: flex !important; }
         }
       `}</style>
     </div>
