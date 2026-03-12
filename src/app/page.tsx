@@ -17,7 +17,6 @@ import ScamCheck from '@/components/ScamCheck';
 const TEAL = '#0d9488';
 const TEAL_LIGHT = '#f0fdfa';
 
-// Views: landing → onboarding → dashboard → chat (chat is a sub-view of dashboard)
 type View = 'landing' | 'onboarding' | 'dashboard' | 'chat';
 
 const SUGGESTIONS = [
@@ -35,6 +34,8 @@ I can assist with ingredient compatibility, routine building, product recommenda
 
 What would you like to explore today?`;
 
+const FOOTER_TEXT = 'Skinsight provides general skincare guidance and is not a substitute for professional dermatological advice. Got feedback? We\'d love to hear it — martinandmirella@gmail.com';
+
 function formatMessage(text: string) {
   return text.split('\n').map((line, i) => {
     const html = line
@@ -47,7 +48,25 @@ function formatMessage(text: string) {
   });
 }
 
-// Bottom nav tab type
+function AppFooter() {
+  return (
+    <div style={{
+      borderTop: '1px solid #f1f5f9',
+      padding: '12px 24px',
+      background: '#ffffff',
+      flexShrink: 0,
+    }}>
+      <p style={{ textAlign: 'center', fontSize: 11, color: '#cbd5e1', margin: 0, lineHeight: 1.5 }}>
+        Skinsight provides general skincare guidance and is not a substitute for professional dermatological advice.{' '}
+        Got feedback? We&apos;d love to hear it —{' '}
+        <a href="mailto:martinandmirella@gmail.com" style={{ color: '#94a3b8', textDecoration: 'none' }}>
+          martinandmirella@gmail.com
+        </a>
+      </p>
+    </div>
+  );
+}
+
 type NavTab = 'home' | 'chat' | 'tools' | 'routine' | 'profile';
 
 export default function App() {
@@ -66,6 +85,7 @@ export default function App() {
   const [showIngredients, setShowIngredients] = useState(false);
   const [showCheckProducts, setShowCheckProducts] = useState(false);
   const [showScamCheck, setShowScamCheck] = useState(false);
+  const [showToolsMenu, setShowToolsMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [activeTab, setActiveTab] = useState<NavTab>('home');
   const [hydrated, setHydrated] = useState(false);
@@ -124,7 +144,6 @@ export default function App() {
     setView('chat');
     setActiveTab('chat');
     if (initialMessage) {
-      // Will be sent after render via ref trick — pass through input instead
       setTimeout(() => sendMessageDirect(initialMessage, [welcome], id, p), 100);
     }
   }, []);
@@ -155,7 +174,6 @@ export default function App() {
     setProfile(p);
     saveProfile(p);
     setEditingProfile(false);
-    // Go to dashboard, not directly to chat
     const id = generateId();
     const welcome: Message = { role: 'assistant', content: WELCOME };
     const session: ChatSession = {
@@ -214,8 +232,6 @@ export default function App() {
     }
   };
 
-  const handleStartOver = () => setShowStartOverConfirm(true);
-
   const confirmStartOver = () => {
     setShowStartOverConfirm(false);
     if (profile) startNewSession(profile);
@@ -239,12 +255,21 @@ export default function App() {
     setShowCheckProducts(false);
     setShowScamCheck(false);
     setShowMobileMenu(false);
+    setShowToolsMenu(false);
     if (tab === 'home') { setView('dashboard'); setShowRoutine(false); }
     else if (tab === 'chat') { setView('chat'); setShowRoutine(false); }
-    else if (tab === 'tools') { /* handled by tool buttons */ }
+    else if (tab === 'tools') { setShowIngredients(true); }
     else if (tab === 'routine') { setShowRoutine(true); setView(view === 'chat' ? 'chat' : 'dashboard'); }
     else if (tab === 'profile') { setEditingProfile(true); }
   };
+
+  // Close tools dropdown when clicking outside
+  useEffect(() => {
+    if (!showToolsMenu) return;
+    const handler = () => setShowToolsMenu(false);
+    document.addEventListener('click', handler);
+    return () => document.removeEventListener('click', handler);
+  }, [showToolsMenu]);
 
   if (!hydrated) return null;
 
@@ -254,11 +279,8 @@ export default function App() {
       <Landing
         hasProfile={!!profile?.completed}
         onStart={() => {
-          if (profile?.completed) {
-            setView('dashboard');
-          } else {
-            setView('onboarding');
-          }
+          if (profile?.completed) setView('dashboard');
+          else setView('onboarding');
         }}
         onResume={() => {
           if (profile?.completed) setView('dashboard');
@@ -281,9 +303,9 @@ export default function App() {
   }
 
   // ── Dashboard + Chat ──────────────────────────────────────────
-  // Shared chrome: header + optional bottom nav
   const isDashboard = view === 'dashboard';
   const isChat = view === 'chat';
+  const anyToolOpen = showIngredients || showCheckProducts || showScamCheck;
 
   return (
     <div style={{
@@ -299,7 +321,6 @@ export default function App() {
         background: '#ffffff', flexShrink: 0, zIndex: 40,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          {/* Back button when in chat */}
           {isChat && (
             <button onClick={() => { setView('dashboard'); setActiveTab('home'); }} style={{
               background: 'none', border: 'none', cursor: 'pointer',
@@ -307,7 +328,6 @@ export default function App() {
               display: 'flex', alignItems: 'center',
             }}>←</button>
           )}
-          {/* Hamburger (chat only) */}
           {isChat && (
             <button onClick={() => setShowSessions(s => !s)} style={{
               background: showSessions ? TEAL_LIGHT : 'none', border: 'none',
@@ -315,8 +335,8 @@ export default function App() {
               color: showSessions ? TEAL : '#64748b', fontSize: 18,
             }}>☰</button>
           )}
-          {/* Logo */}
-          <button onClick={() => { setView('dashboard'); setActiveTab('home'); }} style={{
+          {/* Logo — goes to landing page */}
+          <button onClick={() => setView('landing')} style={{
             display: 'flex', alignItems: 'center', gap: 8,
             background: 'none', border: 'none', cursor: 'pointer', padding: 0,
           }}>
@@ -335,51 +355,102 @@ export default function App() {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          {/* Desktop nav */}
+          {/* Desktop nav — clean 5 items */}
           <div className="hide-mobile" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            {profile?.skinType && (
-              <div style={{ fontSize: 12, color: TEAL, background: TEAL_LIGHT, padding: '4px 10px', borderRadius: 20, border: `1px solid ${TEAL}33`, fontWeight: 500 }}>
-                {profile.skinType} skin
-              </div>
-            )}
             <button onClick={() => { setView('dashboard'); setActiveTab('home'); }} style={{
-              padding: '6px 12px', background: isDashboard ? TEAL : 'transparent',
-              border: `1px solid ${isDashboard ? TEAL : '#e2e8f0'}`, borderRadius: 8,
-              fontSize: 13, color: isDashboard ? '#fff' : '#64748b', cursor: 'pointer', fontFamily: 'inherit',
-            }}>🏠 Home</button>
+              padding: '6px 12px', background: isDashboard && !anyToolOpen ? TEAL : 'transparent',
+              border: `1px solid ${isDashboard && !anyToolOpen ? TEAL : '#e2e8f0'}`, borderRadius: 8,
+              fontSize: 13, color: isDashboard && !anyToolOpen ? '#fff' : '#64748b', cursor: 'pointer', fontFamily: 'inherit',
+            }}>Home</button>
+
             <button onClick={() => { setView('chat'); setActiveTab('chat'); }} style={{
               padding: '6px 12px', background: isChat ? TEAL : 'transparent',
               border: `1px solid ${isChat ? TEAL : '#e2e8f0'}`, borderRadius: 8,
               fontSize: 13, color: isChat ? '#fff' : '#64748b', cursor: 'pointer', fontFamily: 'inherit',
-            }}>💬 Chat</button>
-            <button onClick={() => { setShowIngredients(s => !s); setShowCheckProducts(false); setShowScamCheck(false); }} style={{ padding: '6px 12px', background: showIngredients ? TEAL : 'transparent', border: `1px solid ${showIngredients ? TEAL : '#e2e8f0'}`, borderRadius: 8, fontSize: 13, color: showIngredients ? '#fff' : '#64748b', cursor: 'pointer', fontFamily: 'inherit' }}>🔬 Ingredients</button>
-            <button onClick={() => { setShowCheckProducts(s => !s); setShowIngredients(false); setShowScamCheck(false); }} style={{ padding: '6px 12px', background: showCheckProducts ? TEAL : 'transparent', border: `1px solid ${showCheckProducts ? TEAL : '#e2e8f0'}`, borderRadius: 8, fontSize: 13, color: showCheckProducts ? '#fff' : '#64748b', cursor: 'pointer', fontFamily: 'inherit' }}>⚗️ Check</button>
-            <button onClick={() => { setShowScamCheck(s => !s); setShowIngredients(false); setShowCheckProducts(false); }} style={{ padding: '6px 12px', background: showScamCheck ? TEAL : 'transparent', border: `1px solid ${showScamCheck ? TEAL : '#e2e8f0'}`, borderRadius: 8, fontSize: 13, color: showScamCheck ? '#fff' : '#64748b', cursor: 'pointer', fontFamily: 'inherit' }}>🕵️ Reality Check</button>
-            <button onClick={() => setShowRoutine(s => !s)} style={{ padding: '6px 12px', background: showRoutine ? TEAL : 'transparent', border: `1px solid ${showRoutine ? TEAL : '#e2e8f0'}`, borderRadius: 8, fontSize: 13, color: showRoutine ? '#fff' : '#64748b', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 5 }}>
+            }}>Chat</button>
+
+            {/* Tools dropdown */}
+            <div style={{ position: 'relative' }} onClick={e => e.stopPropagation()}>
+              <button onClick={() => setShowToolsMenu(s => !s)} style={{
+                padding: '6px 12px', background: anyToolOpen ? TEAL : 'transparent',
+                border: `1px solid ${anyToolOpen ? TEAL : '#e2e8f0'}`, borderRadius: 8,
+                fontSize: 13, color: anyToolOpen ? '#fff' : '#64748b', cursor: 'pointer', fontFamily: 'inherit',
+                display: 'flex', alignItems: 'center', gap: 4,
+              }}>
+                Tools <span style={{ fontSize: 10 }}>▾</span>
+              </button>
+              {showToolsMenu && (
+                <div style={{
+                  position: 'absolute', right: 0, top: 40,
+                  background: '#fff', border: '1px solid #e2e8f0',
+                  borderRadius: 12, boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+                  zIndex: 200, minWidth: 200, overflow: 'hidden',
+                }}>
+                  {[
+                    { emoji: '🔬', label: 'Ingredient Decoder', action: () => { setShowIngredients(true); setShowCheckProducts(false); setShowScamCheck(false); setShowToolsMenu(false); } },
+                    { emoji: '⚗️', label: 'Check Products', action: () => { setShowCheckProducts(true); setShowIngredients(false); setShowScamCheck(false); setShowToolsMenu(false); } },
+                    { emoji: '🕵️', label: 'Reality Check', action: () => { setShowScamCheck(true); setShowIngredients(false); setShowCheckProducts(false); setShowToolsMenu(false); } },
+                  ].map(item => (
+                    <button key={item.label} onClick={item.action} style={{
+                      width: '100%', padding: '12px 16px', background: 'transparent',
+                      border: 'none', borderBottom: '1px solid #f1f5f9', fontSize: 13,
+                      color: '#0f172a', cursor: 'pointer', fontFamily: 'inherit',
+                      textAlign: 'left', display: 'flex', alignItems: 'center', gap: 10,
+                    }}
+                      onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.background = '#f8fafc'}
+                      onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.background = 'transparent'}
+                    >
+                      <span style={{ fontSize: 16 }}>{item.emoji}</span>
+                      <span>{item.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <button onClick={() => setShowRoutine(s => !s)} style={{
+              padding: '6px 12px', background: showRoutine ? TEAL : 'transparent',
+              border: `1px solid ${showRoutine ? TEAL : '#e2e8f0'}`, borderRadius: 8,
+              fontSize: 13, color: showRoutine ? '#fff' : '#64748b', cursor: 'pointer', fontFamily: 'inherit',
+              display: 'flex', alignItems: 'center', gap: 5,
+            }}>
               My Routine
-              {routine.length > 0 && <span style={{ background: showRoutine ? 'rgba(255,255,255,0.25)' : TEAL, color: '#fff', borderRadius: 10, padding: '1px 6px', fontSize: 11, fontWeight: 700 }}>{routine.length}</span>}
+              {routine.length > 0 && (
+                <span style={{ background: showRoutine ? 'rgba(255,255,255,0.25)' : TEAL, color: '#fff', borderRadius: 10, padding: '1px 6px', fontSize: 11, fontWeight: 700 }}>
+                  {routine.length}
+                </span>
+              )}
             </button>
-            <button onClick={() => setEditingProfile(true)} style={{ padding: '6px 12px', background: 'transparent', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 13, color: '#64748b', cursor: 'pointer', fontFamily: 'inherit' }}
+
+            <button onClick={() => setEditingProfile(true)} style={{
+              padding: '6px 12px', background: 'transparent',
+              border: '1px solid #e2e8f0', borderRadius: 8,
+              fontSize: 13, color: '#64748b', cursor: 'pointer', fontFamily: 'inherit',
+            }}
               onMouseEnter={e => { (e.currentTarget).style.borderColor = TEAL; (e.currentTarget).style.color = TEAL; }}
-              onMouseLeave={e => { (e.currentTarget).style.borderColor = '#e2e8f0'; (e.currentTarget).style.color = '#64748b'; }}>✎ Edit</button>
-            <button onClick={handleStartOver} style={{ padding: '6px 12px', background: 'transparent', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 13, color: '#64748b', cursor: 'pointer', fontFamily: 'inherit' }}
-              onMouseEnter={e => { (e.currentTarget).style.borderColor = '#0f172a'; (e.currentTarget).style.color = '#0f172a'; }}
-              onMouseLeave={e => { (e.currentTarget).style.borderColor = '#e2e8f0'; (e.currentTarget).style.color = '#64748b'; }}>Start over</button>
+              onMouseLeave={e => { (e.currentTarget).style.borderColor = '#e2e8f0'; (e.currentTarget).style.color = '#64748b'; }}
+            >Profile</button>
           </div>
 
-          {/* Mobile: just skin badge + more menu */}
+          {/* Mobile: ⋯ menu only */}
           <div className="show-mobile" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            {profile?.skinType && (
-              <div style={{ fontSize: 11, color: TEAL, background: TEAL_LIGHT, padding: '3px 8px', borderRadius: 20, border: `1px solid ${TEAL}33`, fontWeight: 600 }}>
-                {profile.skinType}
-              </div>
-            )}
             <div style={{ position: 'relative' }}>
-              <button onClick={() => setShowMobileMenu(s => !s)} style={{ width: 36, height: 36, borderRadius: 8, background: showMobileMenu ? '#0f172a' : '#f8fafc', border: `1px solid ${showMobileMenu ? '#0f172a' : '#e2e8f0'}`, cursor: 'pointer', color: showMobileMenu ? '#fff' : '#64748b', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>⋯</button>
+              <button onClick={() => setShowMobileMenu(s => !s)} style={{
+                width: 36, height: 36, borderRadius: 8,
+                background: showMobileMenu ? '#0f172a' : '#f8fafc',
+                border: `1px solid ${showMobileMenu ? '#0f172a' : '#e2e8f0'}`,
+                cursor: 'pointer', color: showMobileMenu ? '#fff' : '#64748b',
+                fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>⋯</button>
               {showMobileMenu && (
-                <div style={{ position: 'absolute', right: 0, top: 44, background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, boxShadow: '0 8px 24px rgba(0,0,0,0.12)', zIndex: 200, minWidth: 160, overflow: 'hidden' }}>
+                <div style={{
+                  position: 'absolute', right: 0, top: 44,
+                  background: '#fff', border: '1px solid #e2e8f0',
+                  borderRadius: 12, boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                  zIndex: 200, minWidth: 160, overflow: 'hidden',
+                }}>
                   <button onClick={() => { setEditingProfile(true); setShowMobileMenu(false); }} style={{ width: '100%', padding: '12px 16px', background: 'transparent', border: 'none', borderBottom: '1px solid #f1f5f9', fontSize: 14, color: '#0f172a', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left' }}>✎ Edit profile</button>
-                  <button onClick={() => { handleStartOver(); setShowMobileMenu(false); }} style={{ width: '100%', padding: '12px 16px', background: 'transparent', border: 'none', fontSize: 14, color: '#0f172a', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left' }}>↺ Start over</button>
+                  <button onClick={() => { handleResetAll(); setShowMobileMenu(false); }} style={{ width: '100%', padding: '12px 16px', background: 'transparent', border: 'none', fontSize: 14, color: '#ef4444', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left' }}>Reset everything</button>
                 </div>
               )}
             </div>
@@ -442,6 +513,7 @@ export default function App() {
             onOpenScamCheck={() => setShowScamCheck(true)}
             onOpenRoutine={() => setShowRoutine(true)}
             onEditProfile={() => setEditingProfile(true)}
+            onRoutineUpdate={handleRoutineUpdate}
           />
         )}
 
@@ -449,7 +521,6 @@ export default function App() {
         {isChat && (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
 
-            {/* Start over confirm */}
             {showStartOverConfirm && (
               <div style={{ background: '#fffbeb', borderBottom: '1px solid #fde68a', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
                 <span style={{ fontSize: 14, color: '#92400e' }}>Start a new consultation? Your current chat will be saved in history.</span>
@@ -460,7 +531,6 @@ export default function App() {
               </div>
             )}
 
-            {/* Messages */}
             <main style={{ flex: 1, overflowY: 'auto', padding: '32px 24px', maxWidth: 760, width: '100%', margin: '0 auto', boxSizing: 'border-box' }}>
               {messages.map((msg, i) => {
                 const isUser = msg.role === 'user';
@@ -502,8 +572,7 @@ export default function App() {
               <div ref={bottomRef} />
             </main>
 
-            {/* Input */}
-            <div style={{ padding: '16px 24px 24px', borderTop: '1px solid #f1f5f9', background: '#ffffff', flexShrink: 0 }}>
+            <div style={{ padding: '12px 24px 16px', borderTop: '1px solid #f1f5f9', background: '#ffffff', flexShrink: 0 }}>
               <div style={{ maxWidth: 760, margin: '0 auto' }}>
                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: 12, background: '#f8fafc', borderRadius: 14, border: '1.5px solid #e2e8f0', padding: '12px 12px 12px 18px' }}
                   onFocusCapture={e => (e.currentTarget as HTMLDivElement).style.borderColor = TEAL}
@@ -516,9 +585,6 @@ export default function App() {
                   />
                   <button onClick={() => sendMessage()} disabled={!input.trim() || loading} style={{ width: 38, height: 38, borderRadius: 10, flexShrink: 0, background: input.trim() && !loading ? TEAL : '#e2e8f0', border: 'none', cursor: input.trim() && !loading ? 'pointer' : 'default', color: input.trim() && !loading ? '#fff' : '#94a3b8', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s ease' }}>→</button>
                 </div>
-                <p style={{ textAlign: 'center', fontSize: 11, color: '#cbd5e1', margin: '10px 0 0' }}>
-                  Skinsight provides general skincare guidance. Always patch test and consult a dermatologist for medical concerns.
-                </p>
               </div>
             </div>
           </div>
@@ -540,23 +606,14 @@ export default function App() {
           { tab: 'profile' as NavTab, emoji: '👤', label: 'Profile' },
         ]).map(({ tab, emoji, label }) => {
           const isActive = (
-            (tab === 'home' && isDashboard && !showRoutine) ||
+            (tab === 'home' && isDashboard && !showRoutine && !anyToolOpen) ||
             (tab === 'chat' && isChat) ||
-            (tab === 'tools' && (showIngredients || showCheckProducts || showScamCheck)) ||
+            (tab === 'tools' && anyToolOpen) ||
             (tab === 'routine' && showRoutine) ||
             (tab === 'profile' && editingProfile)
           );
           return (
-            <button key={tab} onClick={() => {
-              if (tab === 'tools') {
-                setShowIngredients(true);
-                setShowCheckProducts(false);
-                setShowScamCheck(false);
-                setShowMobileMenu(false);
-              } else {
-                handleTabChange(tab);
-              }
-            }} style={{
+            <button key={tab} onClick={() => handleTabChange(tab)} style={{
               flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
               gap: 2, padding: '10px 4px', border: 'none', background: 'none',
               cursor: 'pointer', fontFamily: 'inherit',
@@ -568,6 +625,9 @@ export default function App() {
           );
         })}
       </div>
+
+      {/* ── Footer ── */}
+      <AppFooter />
 
       {/* ── Modals ── */}
       {showRoutine && <RoutineSidebar routine={routine} onUpdate={handleRoutineUpdate} onClose={() => setShowRoutine(false)} />}
