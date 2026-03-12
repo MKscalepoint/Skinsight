@@ -417,8 +417,9 @@ export default function Landing({ onStart, hasProfile, onResume }: LandingProps)
         color: '#94a3b8',
         borderTop: '1px solid #f1f5f9',
       }}>
-        Skinsight provides general skincare guidance and is not a substitute for professional dermatological advice.
-      </div>
+Skinsight provides general skincare guidance and is not a substitute for professional dermatological advice.
+        <br /><br />
+        Got feedback? We'd love to hear it — <a href="mailto:hello@skinsight.app" style={{ color: TEAL, textDecoration: 'none' }}>martinandmirella@gmail.com</a>      </div>
     </div>
   );
 }
