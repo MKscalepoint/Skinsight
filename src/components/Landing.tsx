@@ -296,7 +296,7 @@ export default function Landing({ onStart, hasProfile, onResume }: LandingProps)
                 border: `1px solid ${TEAL_MID}`,
                 borderRadius: 20,
                 padding: '3px 10px',
-                fontSize: 11, fontWeight: 600, color: TEAL,
+                fontSize: 11, fontWeight: i600, color: TEAL,
                 letterSpacing: '0.2px',
               }}>{label} — free now</div>
               <div style={{ fontSize: 32, marginBottom: 14 }}>{icon}</div>
@@ -306,7 +306,20 @@ export default function Landing({ onStart, hasProfile, onResume }: LandingProps)
           ))}
         </div>
       </div>
-
+      <div style={{
+          marginTop: 32,
+          background: TEAL_LIGHT,
+          border: `1px solid ${TEAL_MID}`,
+          borderRadius: 12,
+          padding: '14px 24px',
+          textAlign: 'center',
+          fontSize: 14,
+          color: TEAL,
+          maxWidth: 960,
+          margin: '32px auto 0',
+        }}>
+          🗓️ <strong>On the roadmap:</strong> skin journey tracking, monthly insight recaps, seasonal advice & routine comparisons and more — Skinsight gets smarter the more you use it.
+        </div>
             {/* What you can ask */}
       <div style={{ maxWidth: 860, margin: '0 auto', padding: '64px 40px' }}>
         <h2 style={{
