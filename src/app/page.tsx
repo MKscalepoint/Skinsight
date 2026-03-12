@@ -9,6 +9,8 @@ import {
 import Landing from '@/components/Landing';
 import Onboarding from '@/components/Onboarding';
 import RoutineSidebar from '@/components/RoutineSidebar';
+import IngredientDecoder from '@/components/IngredientDecoder';
+import CheckProducts from '@/components/CheckProducts';
 
 const TEAL = '#0d9488';
 const TEAL_LIGHT = '#f0fdfa';
@@ -55,6 +57,8 @@ export default function App() {
   const [showRoutine, setShowRoutine] = useState(false);
   const [showSessions, setShowSessions] = useState(false);
   const [showStartOverConfirm, setShowStartOverConfirm] = useState(false);
+  const [showIngredients, setShowIngredients] = useState(false);
+  const [showCheckProducts, setShowCheckProducts] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -318,6 +322,28 @@ export default function App() {
               onMouseEnter={e => { (e.currentTarget).style.borderColor = '#0f172a'; (e.currentTarget).style.color = '#0f172a'; }}
               onMouseLeave={e => { (e.currentTarget).style.borderColor = '#e2e8f0'; (e.currentTarget).style.color = '#64748b'; }}
             ><span className="hide-mobile">Start over</span><span className="show-mobile">↺</span></button>
+            <button onClick={() => { setShowIngredients(s => !s); setShowCheckProducts(false); setShowRoutine(false); }} title="Ingredient Decoder" style={{
+              padding: '6px 10px', background: showIngredients ? TEAL : 'transparent',
+              border: `1px solid ${showIngredients ? TEAL : '#e2e8f0'}`,
+              borderRadius: 8, fontSize: 13,
+              color: showIngredients ? '#fff' : '#64748b',
+              cursor: 'pointer', fontFamily: 'inherit', fontWeight: 500,
+              whiteSpace: 'nowrap',
+            }}>
+              <span>🔬</span>
+              <span className="hide-mobile" style={{ marginLeft: 4 }}>Ingredients</span>
+            </button>
+            <button onClick={() => { setShowCheckProducts(s => !s); setShowIngredients(false); setShowRoutine(false); }} title="Check Products" style={{
+              padding: '6px 10px', background: showCheckProducts ? TEAL : 'transparent',
+              border: `1px solid ${showCheckProducts ? TEAL : '#e2e8f0'}`,
+              borderRadius: 8, fontSize: 13,
+              color: showCheckProducts ? '#fff' : '#64748b',
+              cursor: 'pointer', fontFamily: 'inherit', fontWeight: 500,
+              whiteSpace: 'nowrap',
+            }}>
+              <span>⚗️</span>
+              <span className="hide-mobile" style={{ marginLeft: 4 }}>Check Products</span>
+            </button>
             <button onClick={() => setShowRoutine(s => !s)} title="My Routine" style={{
               padding: '6px 10px',
               background: showRoutine ? TEAL : 'transparent',
@@ -490,6 +516,8 @@ export default function App() {
       </div>
 
       {showRoutine && <RoutineSidebar routine={routine} onUpdate={handleRoutineUpdate} onClose={() => setShowRoutine(false)} />}
+      {showIngredients && <IngredientDecoder onClose={() => setShowIngredients(false)} />}
+      {showCheckProducts && <CheckProducts onClose={() => setShowCheckProducts(false)} />}
 
       <style>{`
         @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
