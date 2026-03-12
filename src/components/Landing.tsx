@@ -194,7 +194,7 @@ export default function Landing({ onStart, hasProfile, onResume }: LandingProps)
     <div style={{
           marginTop: 32,
           background: TEAL_LIGHT,
-          border: 1px solid ${TEAL_MID},
+          border: `1px solid ${TEAL_MID}`,
           borderRadius: 12,
           padding: '14px 24px',
           textAlign: 'center',
