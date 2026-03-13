@@ -254,12 +254,11 @@ export default function App() {
     setShowCheckProducts(false);
     setShowScamCheck(false);
     setShowMobileMenu(false);
-    setShowToolsMenu(false);
-    if (tab === 'home') { setView('dashboard'); }
-    else if (tab === 'chat') { setView('chat'); }
-    else if (tab === 'tools') { setShowIngredients(true); }
-    else if (tab === 'routine') { setView('dashboard'); }
-    else if (tab === 'profile') { setEditingProfile(true); }
+    if (tab === 'home') { setView('dashboard'); setShowToolsMenu(false); }
+    else if (tab === 'chat') { setView('chat'); setShowToolsMenu(false); }
+    else if (tab === 'tools') { setShowToolsMenu(s => !s); }
+    else if (tab === 'routine') { setView('dashboard'); setShowToolsMenu(false); setTimeout(() => scrollToRoutineRef.current?.(), 50); }
+    else if (tab === 'profile') { setEditingProfile(true); setShowToolsMenu(false); }
   };
 
   // Close tools dropdown when clicking outside
@@ -386,9 +385,9 @@ export default function App() {
                   zIndex: 200, minWidth: 200, overflow: 'hidden',
                 }}>
                   {[
-                    { emoji: '🔬', label: 'Ingredient Decoder', action: () => { setShowIngredients(true); setShowCheckProducts(false); setShowScamCheck(false); setShowToolsMenu(false); } },
-                    { emoji: '⚗️', label: 'Check Products', action: () => { setShowCheckProducts(true); setShowIngredients(false); setShowScamCheck(false); setShowToolsMenu(false); } },
-                    { emoji: '🕵️', label: 'Reality Check', action: () => { setShowScamCheck(true); setShowIngredients(false); setShowCheckProducts(false); setShowToolsMenu(false); } },
+                    { label: 'Ingredient Decoder', action: () => { setShowIngredients(true); setShowCheckProducts(false); setShowScamCheck(false); setShowToolsMenu(false); }, icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={TEAL} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/></svg> },
+                    { label: 'Check Products', action: () => { setShowCheckProducts(true); setShowIngredients(false); setShowScamCheck(false); setShowToolsMenu(false); }, icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={TEAL} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg> },
+                    { label: 'Reality Check', action: () => { setShowScamCheck(true); setShowIngredients(false); setShowCheckProducts(false); setShowToolsMenu(false); }, icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={TEAL} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> },
                   ].map(item => (
                     <button key={item.label} onClick={item.action} style={{
                       width: '100%', padding: '12px 16px', background: 'transparent',
@@ -399,7 +398,7 @@ export default function App() {
                       onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.background = '#f8fafc'}
                       onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.background = 'transparent'}
                     >
-                      <span style={{ fontSize: 16 }}>{item.emoji}</span>
+                      <div style={{ width: 24, height: 24, borderRadius: 6, background: TEAL_LIGHT, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{item.icon}</div>
                       <span>{item.label}</span>
                     </button>
                   ))}
@@ -593,35 +592,72 @@ export default function App() {
         )}
       </div>
 
+      {/* ── Mobile tools picker sheet ── */}
+      {showToolsMenu && (
+        <div className="show-mobile" style={{
+          position: 'fixed', bottom: 65, left: 0, right: 0,
+          background: '#fff', borderTop: '1px solid #e2e8f0',
+          borderRadius: '16px 16px 0 0',
+          boxShadow: '0 -4px 24px rgba(0,0,0,0.10)',
+          zIndex: 300, padding: '12px 16px 8px',
+          display: 'flex', flexDirection: 'column', gap: 4,
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: 6, paddingLeft: 4 }}>Tools</div>
+          {[
+            { label: 'Ingredient Decoder', desc: 'Decode any ingredient list', action: () => { setShowIngredients(true); setShowCheckProducts(false); setShowScamCheck(false); setShowToolsMenu(false); setActiveTab('tools'); }, icon: (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={TEAL} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/></svg>) },
+            { label: 'Check Products', desc: 'Find conflicts & layering order', action: () => { setShowCheckProducts(true); setShowIngredients(false); setShowScamCheck(false); setShowToolsMenu(false); setActiveTab('tools'); }, icon: (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={TEAL} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>) },
+            { label: 'Reality Check', desc: 'Is that TikTok product worth it?', action: () => { setShowScamCheck(true); setShowIngredients(false); setShowCheckProducts(false); setShowToolsMenu(false); setActiveTab('tools'); }, icon: (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={TEAL} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>) },
+          ].map(item => (
+            <button key={item.label} onClick={item.action} style={{
+              display: 'flex', alignItems: 'center', gap: 12,
+              padding: '11px 12px', background: 'transparent', border: 'none',
+              borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left', width: '100%',
+            }}
+              onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.background = TEAL_LIGHT}
+              onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.background = 'transparent'}
+            >
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: TEAL_LIGHT, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{item.icon}</div>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: '#0f172a' }}>{item.label}</div>
+                <div style={{ fontSize: 12, color: '#94a3b8' }}>{item.desc}</div>
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+      {showToolsMenu && (
+        <div className="show-mobile" style={{ position: 'fixed', inset: 0, zIndex: 290, background: 'rgba(0,0,0,0.2)' }} onClick={() => setShowToolsMenu(false)} />
+      )}
+
       {/* ── Mobile bottom nav ── */}
       <div className="show-mobile" style={{
         display: 'flex', alignItems: 'center',
         borderTop: '1px solid #e2e8f0',
-        background: '#fff', flexShrink: 0,
+        background: '#fff', flexShrink: 0, zIndex: 310,
         paddingBottom: 'env(safe-area-inset-bottom)',
       }}>
         {([
-          { tab: 'home' as NavTab, emoji: '🏠', label: 'Home' },
-          { tab: 'chat' as NavTab, emoji: '💬', label: 'Chat' },
-          { tab: 'tools' as NavTab, emoji: '🔬', label: 'Tools' },
-          { tab: 'routine' as NavTab, emoji: '📋', label: 'Routine' },
-          { tab: 'profile' as NavTab, emoji: '👤', label: 'Profile' },
-        ]).map(({ tab, emoji, label }) => {
+          { tab: 'home' as NavTab, label: 'Home', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> },
+          { tab: 'chat' as NavTab, label: 'Chat', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> },
+          { tab: 'tools' as NavTab, label: 'Tools', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/></svg> },
+          { tab: 'routine' as NavTab, label: 'Routine', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> },
+          { tab: 'profile' as NavTab, label: 'Profile', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> },
+        ]).map(({ tab, label, icon }) => {
           const isActive = (
-            (tab === 'home' && isDashboard && !anyToolOpen) ||
+            (tab === 'home' && isDashboard && !anyToolOpen && !showToolsMenu) ||
             (tab === 'chat' && isChat) ||
-            (tab === 'tools' && anyToolOpen) ||
-            (tab === 'routine' && isDashboard && !anyToolOpen) ||
+            (tab === 'tools' && (anyToolOpen || showToolsMenu)) ||
+            (tab === 'routine' && isDashboard && !anyToolOpen && !showToolsMenu) ||
             (tab === 'profile' && editingProfile)
           );
           return (
             <button key={tab} onClick={() => handleTabChange(tab)} style={{
               flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
-              gap: 2, padding: '10px 4px', border: 'none', background: 'none',
-              cursor: 'pointer', fontFamily: 'inherit',
+              gap: 3, padding: '10px 4px', border: 'none', background: 'none',
+              cursor: 'pointer', fontFamily: 'inherit', color: isActive ? TEAL : '#94a3b8',
             }}>
-              <span style={{ fontSize: 20 }}>{emoji}</span>
-              <span style={{ fontSize: 10, fontWeight: isActive ? 700 : 500, color: isActive ? TEAL : '#94a3b8' }}>{label}</span>
+              {icon}
+              <span style={{ fontSize: 10, fontWeight: isActive ? 700 : 500 }}>{label}</span>
               {isActive && <div style={{ width: 4, height: 4, borderRadius: 2, background: TEAL, marginTop: 1 }} />}
             </button>
           );
