@@ -89,6 +89,7 @@ export default function App() {
   const [hydrated, setHydrated] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const lastAssistantRef = useRef<HTMLDivElement>(null);
+  const scrollToRoutineRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     const savedProfile = getProfile();
@@ -320,7 +321,7 @@ export default function App() {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           {isChat && (
-            <button onClick={() => { setView('dashboard'); setActiveTab('home'); }} style={{
+            <button onClick={() => { setView('dashboard'); setActiveTab('home'); setTimeout(() => scrollToRoutineRef.current?.(), 50); }} style={{
               background: 'none', border: 'none', cursor: 'pointer',
               fontSize: 20, color: '#64748b', padding: '4px 6px', borderRadius: 6,
               display: 'flex', alignItems: 'center',
@@ -355,7 +356,7 @@ export default function App() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           {/* Desktop nav — clean 5 items */}
           <div className="hide-mobile" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <button onClick={() => { setView('dashboard'); setActiveTab('home'); }} style={{
+            <button onClick={() => { setView('dashboard'); setActiveTab('home'); setTimeout(() => scrollToRoutineRef.current?.(), 50); }} style={{
               padding: '6px 12px', background: isDashboard && !anyToolOpen ? TEAL : 'transparent',
               border: `1px solid ${isDashboard && !anyToolOpen ? TEAL : '#e2e8f0'}`, borderRadius: 8,
               fontSize: 13, color: isDashboard && !anyToolOpen ? '#fff' : '#64748b', cursor: 'pointer', fontFamily: 'inherit',
@@ -406,7 +407,7 @@ export default function App() {
               )}
             </div>
 
-            <button onClick={() => { setView('dashboard'); setActiveTab('home'); }} style={{
+            <button onClick={() => { setView('dashboard'); setActiveTab('home'); setTimeout(() => scrollToRoutineRef.current?.(), 50); }} style={{
               padding: '6px 12px', background: 'transparent',
               border: '1px solid #e2e8f0', borderRadius: 8,
               fontSize: 13, color: '#64748b', cursor: 'pointer', fontFamily: 'inherit',
@@ -514,6 +515,7 @@ export default function App() {
             onOpenScamCheck={() => setShowScamCheck(true)}
             onEditProfile={() => setEditingProfile(true)}
             onRoutineUpdate={handleRoutineUpdate}
+            onRegisterScrollToRoutine={(fn) => { scrollToRoutineRef.current = fn; }}
           />
         )}
 
