@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { UserProfile, RoutineProduct } from '@/types';
 import { generateId } from '@/lib/storage';
 
@@ -17,6 +17,7 @@ interface DashboardProps {
   onOpenScamCheck: () => void;
   onEditProfile: () => void;
   onRoutineUpdate: (r: RoutineProduct[]) => void;
+  onRegisterScrollToRoutine?: (fn: () => void) => void;
 }
 
 const SUGGESTIONS = [
@@ -30,8 +31,18 @@ const PRODUCT_TYPES = ['Cleanser', 'Toner', 'Serum', 'Eye cream', 'Moisturiser',
 
 export default function Dashboard({
   profile, routine, onOpenChat, onOpenIngredients,
-  onOpenCheckProducts, onOpenScamCheck, onEditProfile, onRoutineUpdate,
+  onOpenCheckProducts, onOpenScamCheck, onEditProfile, onRoutineUpdate, onRegisterScrollToRoutine,
 }: DashboardProps) {
+
+  const routineSectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (onRegisterScrollToRoutine) {
+      onRegisterScrollToRoutine(() => {
+        routineSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }, [onRegisterScrollToRoutine]);
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
@@ -190,7 +201,7 @@ export default function Dashboard({
         </div>
 
         {/* Routine — inline, no sidebar */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+        <div ref={routineSectionRef} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
           <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', color: '#94a3b8' }}>
             My Routine
           </div>
