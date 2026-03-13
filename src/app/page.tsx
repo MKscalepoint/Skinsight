@@ -49,7 +49,7 @@ function formatMessage(text: string) {
 
 function AppFooter() {
   return (
-    <div style={{
+    <div className="hide-mobile" style={{
       borderTop: '1px solid #f1f5f9',
       padding: '12px 24px',
       background: '#ffffff',
