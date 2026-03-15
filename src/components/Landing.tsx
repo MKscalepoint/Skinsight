@@ -104,7 +104,7 @@ export default function Landing({ onStart, hasProfile, onResume }: LandingProps)
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: '#fff', fontSize: 16, fontWeight: 700,
           }}>S</div>
-          <span style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.3px' }}>Skinsight</span>
+          <span style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.3px' }}>SkynKarma</span>
         </div>
         {hasProfile && (
           <button onClick={onResume} style={{
@@ -203,7 +203,7 @@ export default function Landing({ onStart, hasProfile, onResume }: LandingProps)
           maxWidth: 960,
           margin: '32px auto 0',
         }}>
-       🗓️ <strong>On the roadmap:</strong> skin journey tracking, monthly insight recaps, conversation memory and more — Skinsight gets smarter the longer you use it.
+       🗓️ <strong>On the roadmap:</strong> skin journey tracking, monthly insight recaps, conversation memory and more — SkynKarma gets smarter the longer you use it.
         </div>
       {/* How it works */}
       <div style={{
@@ -331,7 +331,7 @@ export default function Landing({ onStart, hasProfile, onResume }: LandingProps)
           What you can ask
         </h2>
         <p style={{ textAlign: 'center', color: '#64748b', fontSize: 16, margin: '0 0 40px' }}>
-          Skinsight covers everything from basics to advanced skincare science.
+          SkynKarma covers everything from basics to advanced skincare science.
         </p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center' }}>
           {[
