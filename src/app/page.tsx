@@ -13,8 +13,8 @@ import IngredientDecoder from '@/components/IngredientDecoder';
 import CheckProducts from '@/components/CheckProducts';
 import ScamCheck from '@/components/ScamCheck';
 
-const TEAL = '#0d9488';
-const TEAL_LIGHT = '#f0fdfa';
+const TEAL = '#b5737a';
+const TEAL_LIGHT = '#fdf2f3';
 
 type View = 'landing' | 'onboarding' | 'dashboard' | 'chat';
 
