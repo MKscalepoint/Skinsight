@@ -108,9 +108,9 @@ export default function App() {
     setView('landing');
     setHydrated(true);
 
-    const openTool = sessionStorage.getItem('skinsight_open_tool');
+    const openTool = sessionStorage.getItem('skynkarma_open_tool');
     if (openTool) {
-      sessionStorage.removeItem('skinsight_open_tool');
+      sessionStorage.removeItem('skynkarma_open_tool');
       if (openTool === 'ingredients') {
         setShowIngredients(true);
         setView('dashboard');
