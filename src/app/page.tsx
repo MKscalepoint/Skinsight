@@ -344,7 +344,7 @@ export default function App() {
               color: '#fff', fontSize: 15, fontWeight: 700,
             }}>S</div>
             <div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', lineHeight: 1.2, textAlign: 'left' }}>Skinsight</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', lineHeight: 1.2, textAlign: 'left' }}>SkynKarma</div>
               <div style={{ fontSize: 11, color: '#94a3b8', lineHeight: 1 }}>
                 {isChat ? 'Skin Advisor' : 'Dashboard'}
               </div>
