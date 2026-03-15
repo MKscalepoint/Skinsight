@@ -162,7 +162,7 @@ export default function Landing({ onStart, hasProfile, onResume }: LandingProps)
           margin: '0 auto 40px',
           maxWidth: 560,
         }}>
-          Skinsight helps you build the right routine, understand your ingredients, and make confident choices — personalised to your skin type and concerns.
+          SkynKarma helps you build the right routine, understand your ingredients, and make confident choices — personalised to your skin type and concerns.
         </p>
 
         <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -429,7 +429,7 @@ export default function Landing({ onStart, hasProfile, onResume }: LandingProps)
         color: '#94a3b8',
         borderTop: '1px solid #f1f5f9',
       }}>
-Skinsight provides general skincare guidance and is not a substitute for professional dermatological advice. <br /><br /> Got feedback? We'd love to hear it — <a href="mailto:martinandmirella@gmail.com" style={{ color: TEAL, textDecoration: 'none' }}>martinandmirella@gmail.com</a>      </div>
+SkynKarma provides general skincare guidance and is not a substitute for professional dermatological advice. <br /><br /> Got feedback? We'd love to hear it — <a href="mailto:martinandmirella@gmail.com" style={{ color: TEAL, textDecoration: 'none' }}>martinandmirella@gmail.com</a>      </div>
     </div>
   );
 }
