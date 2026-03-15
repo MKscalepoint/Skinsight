@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { UserProfile, ONBOARDING_QUESTIONS } from '@/types';
 
-const TEAL = '#0d9488';
+const TEAL = '#b5737a';
 
 interface OnboardingProps {
   onComplete: (profile: UserProfile) => void;
