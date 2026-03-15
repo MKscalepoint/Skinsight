@@ -27,13 +27,13 @@ const SUGGESTIONS = [
   'Explain skin cycling to me',
 ];
 
-const WELCOME = `Welcome to Skinsight. I've reviewed your skin profile and I'm ready to help.
+const WELCOME = `Welcome to SkynKarma. I've reviewed your skin profile and I'm ready to help.
 
 I can assist with ingredient compatibility, routine building, product recommendations, and anything else skincare-related. All my advice is tailored to your specific skin type and concerns.
 
 What would you like to explore today?`;
 
-const FOOTER_TEXT = 'Skinsight provides general skincare guidance and is not a substitute for professional dermatological advice. Got feedback? We\'d love to hear it — martinandmirella@gmail.com';
+const FOOTER_TEXT = 'SkynKarma provides general skincare guidance and is not a substitute for professional dermatological advice. Got feedback? We\'d love to hear it — martinandmirella@gmail.com';
 
 function formatMessage(text: string) {
   return text.split('\n').map((line, i) => {
@@ -56,7 +56,7 @@ function AppFooter() {
       flexShrink: 0,
     }}>
       <p style={{ textAlign: 'center', fontSize: 11, color: '#cbd5e1', margin: 0, lineHeight: 1.5 }}>
-        Skinsight provides general skincare guidance and is not a substitute for professional dermatological advice.{' '}
+        SkynKarma provides general skincare guidance and is not a substitute for professional dermatological advice.{' '}
         Got feedback? We&apos;d love to hear it —{' '}
         <a href="mailto:martinandmirella@gmail.com" style={{ color: '#94a3b8', textDecoration: 'none' }}>
           martinandmirella@gmail.com
