@@ -4,8 +4,8 @@ import { useState, useRef } from 'react';
 import { UserProfile, ProductEntry, AnalysisReport } from '@/types';
 import { generateId } from '@/lib/storage';
 
-const TEAL = '#0d9488';
-const TEAL_LIGHT = '#f0fdfa';
+const TEAL = '#b5737a';
+const TEAL_LIGHT = '#fdf2f3';
 
 const PRODUCT_TYPES = [
   'Cleanser', 'Toner', 'Essence', 'Serum', 'Eye Cream',
