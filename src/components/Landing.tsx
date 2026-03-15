@@ -217,7 +217,7 @@ export default function Landing({ onStart, hasProfile, onResume }: LandingProps)
             textAlign: 'center', fontSize: 30, fontWeight: 700,
             color: '#0f172a', margin: '0 0 48px', letterSpacing: '-0.5px',
           }}>
-            How Skinsight works
+            How SkynKarma works
           </h2>
           <div style={{
             display: 'grid',
