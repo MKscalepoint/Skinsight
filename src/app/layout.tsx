@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Skinsight — Personalised Skincare Advisor',
+  title: 'SkynKarma — Personalised Skincare Advisor',
   description: 'AI-powered skincare intelligence. Ingredient compatibility, routine building, and personalised guidance.',
 };
 
