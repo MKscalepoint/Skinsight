@@ -1,10 +1,10 @@
 import { ChatSession, RoutineProduct, UserProfile } from '@/types';
 
 const KEYS = {
-  SESSIONS: 'skinsight_sessions',
-  ROUTINE: 'skinsight_routine',
-  PROFILE: 'skinsight_profile',
-  ACTIVE_SESSION: 'skinsight_active_session',
+  SESSIONS: 'skynkarma_sessions',
+  ROUTINE: 'skynkarma_routine',
+  PROFILE: 'skynkarma_profile',
+  ACTIVE_SESSION: 'skynkarma_active_session',
 };
 
 export function getSessions(): ChatSession[] {
