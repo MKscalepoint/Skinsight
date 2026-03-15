@@ -161,7 +161,7 @@ export default function Dashboard({
         }}>
           <div style={{
             position: 'absolute', top: 0, left: 0, right: 0, height: 3,
-            background: `linear-gradient(90deg, ${TEAL}, #06b6d4)`, borderRadius: '18px 18px 0 0',
+            background: `linear-gradient(90deg, ${TEAL}, #c9a0a6)`, borderRadius: '18px 18px 0 0',
           }} />
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
             <div style={{
